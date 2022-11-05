@@ -7,6 +7,7 @@ export default function DisplayCardCreature({ creatureData }) {
   const [activeCreatures, setActiveCreatures] = useRecoilState(activeCreaturesState)
   const [hpOpen, setHpOpen] = useState(false)
   const [hpVal, setHpVal] = useState(creatureData.max_hp)
+  const [tmpHp, setTmpHp] = useState(0);
  
   return (
     <div 
@@ -21,10 +22,11 @@ export default function DisplayCardCreature({ creatureData }) {
       <div className='flex-1 relative'>
         <div 
           className={`bg-white text-black w-10 flex justify-center rounded-full select-none cursor-pointer
-          ${hpOpen ? 'z-50' : ''}`}
+          ${hpOpen ? 'z-50' : ''}
+          ${parseInt(tmpHp) > 0 && '!text-orange-400'}`}
           onClick={() => setHpOpen(!hpOpen)}
         >
-          {hpVal}
+          {parseInt(hpVal) + parseInt(tmpHp)}
         </div>
       </div>
       {hpOpen &&
@@ -33,6 +35,8 @@ export default function DisplayCardCreature({ creatureData }) {
               maxHp={creatureData.max_hp}
               val={hpVal}
               setVal={setHpVal}
+              tmpHp={tmpHp}
+              setTmpHp={setTmpHp}
               setFormOpen={setHpOpen}
             />
           )
