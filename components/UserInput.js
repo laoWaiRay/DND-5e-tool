@@ -2,6 +2,8 @@ import { Combobox, Transition } from '@headlessui/react'
 import { ChevronUpDownIcon, CheckIcon } from '@heroicons/react/24/solid'
 import Image from 'next/image'
 import React, { Fragment, useEffect, useRef, useState } from 'react'
+import { useRecoilState } from 'recoil'
+import { activeCreaturesState } from '../atoms/activeCreaturesAtom'
 
 export default function UserInput({ creatures }) {
   const [query, setQuery] = useState('')
@@ -12,6 +14,7 @@ export default function UserInput({ creatures }) {
   const [tab, setTab] = useState('player');
   const [selectedCreature, setSelectedCreature] = useState(creatures[0])
   const [creature, setCreature] = useState(null);
+  const [activeCreatures, setActiveCreatures] = useRecoilState(activeCreaturesState);
   const d20Ref = useRef(null);
 
   useEffect(() => {
@@ -19,10 +22,23 @@ export default function UserInput({ creatures }) {
   }, [creatures])
 
   useEffect(() => {
+    console.log('Active Creatures', activeCreatures)
+  }, [activeCreatures])
+
+  useEffect(() => {
     if (!selectedCreature)
       return;
     
-    creatures.find
+    const fetchData = async () => {
+      const res = await fetch(`https://www.dnd5eapi.co` + selectedCreature.url);
+      const json = await res.json()
+      setBonus(Math.floor((parseInt(json.dexterity) - 10) / 2))
+      setHp(json.hit_points)
+      setInit(0)
+    }
+
+    fetchData()
+    // console.log(selectedCreature)
   }, [selectedCreature])
 
   const filteredCreatures =
@@ -35,8 +51,26 @@ export default function UserInput({ creatures }) {
           .includes(query.toLowerCase().replace(/\s+/g, ''))
       )
   
-  const addToList = (e) => {
+  const addToCreaturesList = (e) => {
     e.preventDefault()
+    if (!selectedCreature)
+      return
+    const selectedCreatureData = {
+      ...selectedCreature,
+      max_hp: hp,
+      initiative: init,
+      dex_bonus: bonus
+    }
+    const newArray = [ ...activeCreatures, selectedCreatureData ]
+    newArray.sort((a, b) => {
+      if (a.initiative != b.initiative) {
+        return parseInt(b.initiative) - parseInt(a.initiative)
+      }
+      else {
+        return parseInt(b.dex_bonus) - parseInt(a.dex_bonus)
+      }
+    })
+    setActiveCreatures(newArray)
   }
 
   const spinDice = (e) => {
@@ -54,49 +88,55 @@ export default function UserInput({ creatures }) {
       d20Ref.current.classList.remove('animate-spin-fast')
       setIsSpinning(false)
     }, 1000)
-    setInit(Math.floor(Math.random() * 20) + 1)
+    setInit(Math.floor(Math.random() * 20) + 1 + bonus)
   }
 
   return (
     <div className='mt-auto'>
-      <div className='grid grid-cols-3 m-4 mb-0 mt-auto border bg-gray-50 rounded-md max-w-4xl shadow-sm'>
+      <div 
+        className='grid grid-cols-3 m-4 mb-0 mt-auto border bg-stone-700 text-stone-300 
+        rounded-md max-w-4xl shadow-sm border-stone-500'
+      >
         <div 
-            className={`font-semibold text-center p-0.5 cursor-pointer border-r
-            ${tab === 'player' && 'bg-stone-800 text-white'}`}
+            className={`font-semibold text-center p-0.5 cursor-pointer border-r-stone-500
+            ${tab === 'player' && 'bg-stone-50 text-stone-800 rounded-md'}
+            ${tab != 'creatures' && 'border-r'}`}
             onClick={(e) => setTab('player')}
           >
           Player
         </div>
         <div 
-          className={`font-semibold text-center p-0.5 cursor-pointer border-r
-          ${tab === 'creatures' && 'bg-stone-800 text-white'}`}
+          className={`font-semibold text-center p-0.5 cursor-pointer border-r-stone-500
+          ${tab === 'creatures' && 'bg-stone-50 text-stone-800 rounded-md'}
+          ${tab != 'custom' && 'border-r'}`}
           onClick={(e) => setTab('creatures')}
         >
           Creatures
         </div>
         <div 
           className={`font-semibold text-center p-0.5 cursor-pointer
-          ${tab === 'custom' && 'bg-stone-800 text-white'}`}
+          ${tab === 'custom' && 'bg-stone-50 text-stone-800 rounded-md'}`}
           onClick={(e) => setTab('custom')}
         >
           Custom
         </div>
       </div>
-      <div className='bg-gray-50 m-4 mt-2 rounded-md max-w-2xl border shadow-md'>
+      <div className='bg-stone-800 border-stone-500 m-4 mt-2 rounded-md max-w-2xl border shadow-md'>
         <form 
-          className='p-4 text-black h-52 grid grid-cols-3 gap-2'
-          onSubmit={addToList}
+          className='p-4 text-black h-52 grid grid-cols-[1fr_1fr_minmax(125px,1fr)] gap-2'
+          onSubmit={addToCreaturesList}
         >
           <div className='col-span-2'>
             <Combobox value={selectedCreature} onChange={setSelectedCreature}>
               <div className="relative">
                 <div className="relative w-full cursor-default rounded-lg bg-white text-left">
                   <Combobox.Input
-                    className="w-full border-0 rounded-lg py-2 pl-3 pr-10 leading-5 text-gray-900 
+                    className="w-full border-0 rounded-lg py-2 pl-3 pr-10 leading-5 text-stone-800 
                     shadow-md focus:ring-0 focus:shadow-lg
                     duration-300 transition-shadow"
                     displayValue={(person) => person.name}
                     onChange={(event) => setQuery(event.target.value)}
+                    spellCheck='false'
                   />
                   <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
                     <ChevronUpDownIcon
@@ -130,7 +170,7 @@ export default function UserInput({ creatures }) {
                           key={creature.index}
                           className={({ active }) =>
                             `relative cursor-default select-none py-0.5 px-3 ${
-                              active ? 'bg-stone-800 text-white' : 'text-gray-500'
+                              active ? 'bg-stone-600 text-white' : 'text-gray-500'
                             }`
                           }
                           value={creature}
@@ -164,21 +204,21 @@ export default function UserInput({ creatures }) {
             </Combobox>
           </div>
           <div className='grid grid-cols-2 grid-rows-4 gap-2 items-center'>
-            <div className='text-stone-800 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2'>HP :</div>
-            <div className='text-stone-800 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2'>Initiative (total) :</div>
-            <div className='text-stone-800 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2'>Bonus :</div>
-            <button 
-              className='text-stone-800 p-0.5 rounded-md w-full text-center text-xs flex justify-center 
-              items-center col-start-1 col-end-2'
+            <div className='text-stone-300 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2'>HP :</div>
+            <div className='text-stone-300 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2'>Initiative (total) :</div>
+            <div className='text-stone-300 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2'>Bonus :</div>
+            <div 
+              className='text-stone-800 p-0.5 rounded-md text-center text-xs flex justify-center 
+              items-center col-start-1 col-end-2 cursor-pointer'
               onClick={spinDice}
             >
               <div 
                 className='transition-transform duration-300'
                 ref={d20Ref}
               >
-                <Image src='/images/d20-dark.png' alt='d20' width={28} height={28} /> 
+                <Image src='/images/d20-light.png' alt='d20' width={28} height={28} className='h-auto w-auto' /> 
               </div>
-            </button>
+            </div>
             <input 
               className="w-full border-0 rounded-lg pr-1 text-gray-900 
               focus:ring-0 shadow-md focus:shadow-lg transition-shadow duration-300
@@ -195,8 +235,8 @@ export default function UserInput({ creatures }) {
               col-start-2 col-end-3 row-start-2 row-end-3"
               type='number'
               placeholder='0'
-              min={1}
-              max={50}
+              min={-11}
+              max={30}
               value={init}
               onChange={(e) => setInit(e.target.value)}
             />
@@ -206,13 +246,13 @@ export default function UserInput({ creatures }) {
               col-start-2 col-end-3 row-start-3 row-end-4"
               type='number'
               placeholder='DEX'
-              min={0}
-              max={20}
+              min={-10}
+              max={10}
               value={bonus}
               onChange={(e) => setBonus(e.target.value)}
             />
-            <button className='bg-stone-800 text-white p-2 rounded-md w-full
-            active:bg-stone-700 font-semibold col-start-2 col-end-3'>
+            <button className='bg-white text-stone-800 p-2 rounded-md w-full
+            active:bg-stone-300 font-semibold col-start-2 col-end-3'>
               Add
             </button>
           </div>

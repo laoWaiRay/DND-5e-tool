@@ -19,6 +19,16 @@ a {
   box-sizing: border-box;
 }
 
+.bg-image {
+  background: linear-gradient(to left, rgba(0,0,0, .5), rgba(0,0,0,.6)), url('/images/wallpaper.jpg');
+  background-size: cover;
+  background-position: right;
+}
+
+.fix-borders:not(:last-child) {
+  border-bottom: 0;
+}
+
 /* :focus {
   outline: 0 !important;
   box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
