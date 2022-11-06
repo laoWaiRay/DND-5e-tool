@@ -11,7 +11,7 @@ export default function DisplayCardCreature({ creatureData }) {
  
   return (
     <div 
-      className='flex fix-borders py-3 px-4 border border-stone-400 bg-stone-800 text-stone-300 
+      className='flex fix-borders py-3 px-4 border border-gray-700 bg-gray-800 text-stone-300 
       rounded-md shadow-md relative'
     >
       {/* Name */}

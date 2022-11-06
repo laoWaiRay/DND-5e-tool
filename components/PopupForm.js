@@ -109,7 +109,7 @@ export default function PopupForm({ val, setVal, setFormOpen, maxHp, tmpHp, setT
   return (
     <div 
       className='flex absolute z-10 -bottom-[100px] left-6 bg-opacity-90 
-    bg-black py-4 px-4 rounded-md border border-stone-400'
+    bg-black py-4 px-4 rounded-md border border-stone-400 outline-none'
       onKeyDown={handleKeyDown}
       tabIndex='0'
     >
@@ -202,7 +202,7 @@ export default function PopupForm({ val, setVal, setFormOpen, maxHp, tmpHp, setT
           className='absolute text-sm leading-5 -bottom-[1px] -right-40 bg-black bg-opacity-90 
           text-stone-100 p-2.5 rounded-md border-stone-400 border'
         >
-          <h2>Keyboard Shortcuts:</h2>
+          <h2>Shortcuts:</h2>
           <p>
             &apos;Esc&apos; : Close menu
           </p>

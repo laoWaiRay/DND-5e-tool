@@ -20,7 +20,7 @@ a {
 }
 
 .bg-image {
-  background: linear-gradient(to left, rgba(0,0,0, .5), rgba(0,0,0,.6)), url('/images/wallpaper.jpg');
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/wallpaper.jpg');
   background-size: cover;
   background-position: right;
 }
@@ -28,6 +28,19 @@ a {
 .fix-borders:not(:last-child) {
   border-bottom: 0;
 }
+
+/* .dropdown {
+  overflow: hidden;
+}
+
+.dropdown.open {
+  overflow: auto;
+  animation: hide-scroll 1.2s backwards;
+}
+
+@keyframes hide-scroll {
+  from, to { overflow: hidden; } 
+} */
 
 /* :focus {
   outline: 0 !important;
