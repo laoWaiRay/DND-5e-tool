@@ -86,4 +86,4 @@ const statuses = [
   },
 ]
 
-export default statuses
+export { statuses }

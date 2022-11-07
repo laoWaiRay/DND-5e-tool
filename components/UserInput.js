@@ -59,6 +59,7 @@ export default function UserInput({ creatures }) {
       return
     const selectedCreatureData = {
       ...selectedCreature,
+      id: Math.random(),
       max_hp: hp,
       initiative: init,
       dex_bonus: bonus,

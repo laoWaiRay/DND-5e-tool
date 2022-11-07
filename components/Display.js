@@ -21,9 +21,9 @@ export default function Display() {
             </div>
           )
         : (
-            activeCreatures.map((creature) => (
+            activeCreatures.map((creature, index) => (
               <DisplayCardCreature 
-                key={creature.index}
+                key={creature.id}
                 creatureData={creature} 
               />
             ))
