@@ -108,21 +108,21 @@ export default function PopupForm({ val, setVal, setFormOpen, maxHp, tmpHp, setT
 
   return (
     <div 
-      className='flex absolute z-10 -bottom-[100px] left-6 bg-opacity-90 
-    bg-black py-4 px-4 rounded-md border border-stone-400 outline-none'
+      className='flex absolute z-10 -bottom-[110px] -left-[9px] bg-gray-900 py-4 px-4 rounded-md 
+      border border-gray-600 outline-none shadow-md shadow-gray-900'
       onKeyDown={handleKeyDown}
       tabIndex='0'
     >
       <div
-        className='absolute w-0 h-0 bg-transparent left-1 -top-7 border-[16px] 
-        border-black border-t-transparent border-r-transparent border-l-transparent
-        border-opacity-100 border-b-black'
+        className='absolute w-0 h-0 bg-transparent left-5 -top-7 border-[16px] 
+        border-gray-900 border-t-transparent border-r-transparent border-l-transparent
+        border-b-gray-900'
       >
-        <div className='absolute bg-stone-400 w-[18px] h-[1px] rotate-45 top-[5px] -right-[15px]' />
-        <div className='absolute bg-stone-400 w-[17px] h-[1px] -rotate-45 top-[5px] -left-[14.5px]' />
+        <div className='absolute bg-gray-600 w-[18px] h-[1px] rotate-45 top-[5px] -right-[15px]' />
+        <div className='absolute bg-gray-600 w-[17px] h-[1px] -rotate-45 top-[5px] -left-[14.5px]' />
       </div>
       <div className='flex'>
-        <div className='w-full grid grid-cols-3 gap-2'>
+        <div className='w-full grid grid-cols-3 gap-2 gap-y-4'>
           <div>
             <input
               className='rounded-md py-0.5 pr-1 w-full text-stone-700 focus:border-gray-600 focus:ring-gray-600'
@@ -153,23 +153,23 @@ export default function PopupForm({ val, setVal, setFormOpen, maxHp, tmpHp, setT
 
           <div className='text-sm flex items-center justify-center'>Temp HP :</div>
           <input
-              className='rounded-md py-0.5 pr-1 w-full text-stone-700 focus:border-gray-600 focus:ring-gray-600'
-              type='number'
-              value={tmpHpValue ? tmpHpValue : 0}
-              onChange= {(e) => {
-                if (e.target.value.length >= 4) {
-                  setTmpHpValue(Math.floor(parseInt(e.target.value) / 10))
-                }
-                else if (e.target.value[0] == '0') {
-                  setTmpHpValue(e.target.value.slice(-1))
-                }
-                else {
-                  setTmpHpValue(parseInt(e.target.value))
-                }
-              }}
-              min={0}
-              max={999}
-            />
+            className='rounded-md py-0.5 pr-1 w-full text-stone-700 focus:border-gray-600 focus:ring-gray-600'
+            type='number'
+            value={tmpHpValue ? tmpHpValue : 0}
+            onChange= {(e) => {
+              if (e.target.value.length >= 4) {
+                setTmpHpValue(Math.floor(parseInt(e.target.value) / 10))
+              }
+              else if (e.target.value[0] == '0') {
+                setTmpHpValue(e.target.value.slice(-1))
+              }
+              else {
+                setTmpHpValue(parseInt(e.target.value))
+              }
+            }}
+            min={0}
+            max={999}
+          />
           <button 
               className='bg-stone-600 text-sm p-[5px] px-2 rounded text-stone-100 hover:bg-stone-500'
               onClick={changeTmpHp}

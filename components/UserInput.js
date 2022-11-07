@@ -8,6 +8,7 @@ import { activeCreaturesState } from '../atoms/activeCreaturesAtom'
 export default function UserInput({ creatures }) {
   const [query, setQuery] = useState('')
   const [hp, setHp] = useState(0);
+  const [ac, setAc] = useState(0);
   const [init, setInit] = useState(0);
   const [bonus, setBonus] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
@@ -34,6 +35,7 @@ export default function UserInput({ creatures }) {
       const json = await res.json()
       setBonus(Math.floor((parseInt(json.dexterity) - 10) / 2))
       setHp(json.hit_points)
+      setAc(json.armor_class)
       setInit(0)
     }
 
@@ -42,14 +44,14 @@ export default function UserInput({ creatures }) {
   }, [selectedCreature])
 
   const filteredCreatures =
-  query === ''
-    ? creatures
-    : creatures.filter((creature) =>
-        creature.name
-          .toLowerCase()
-          .replace(/\s+/g, '')
-          .includes(query.toLowerCase().replace(/\s+/g, ''))
-      )
+    query === ''
+      ? creatures
+      : creatures.filter((creature) =>
+          creature.name
+            .toLowerCase()
+            .replace(/\s+/g, '')
+            .includes(query.toLowerCase().replace(/\s+/g, ''))
+        )
   
   const addToCreaturesList = (e) => {
     e.preventDefault()
@@ -59,7 +61,8 @@ export default function UserInput({ creatures }) {
       ...selectedCreature,
       max_hp: hp,
       initiative: init,
-      dex_bonus: bonus
+      dex_bonus: bonus,
+      ac: ac
     }
     const newArray = [ ...activeCreatures, selectedCreatureData ]
     newArray.sort((a, b) => {
@@ -142,7 +145,7 @@ export default function UserInput({ creatures }) {
         </div>
         <div className='bg-gray-800 border-gray-700 m-4 mt-2 rounded-md max-w-2xl border shadow-md'>
           <form 
-            className='p-4 text-gray-800 h-52 grid grid-cols-[1fr_1fr_minmax(125px,1fr)] gap-2'
+            className='p-4 text-gray-800 grid grid-cols-[1fr_1fr_minmax(125px,1fr)] gap-2'
             onSubmit={addToCreaturesList}
           >
             <div className='col-span-2'>
@@ -159,7 +162,7 @@ export default function UserInput({ creatures }) {
                     />
                     <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
                       <ChevronUpDownIcon
-                        className="h-5 w-5 text-gray-400"
+                        className="h-5 w-5 text-gray-600"
                         aria-hidden="true"
                       />
                     </Combobox.Button>
@@ -175,7 +178,7 @@ export default function UserInput({ creatures }) {
                     afterLeave={() => setQuery('')}
                   >
                     <Combobox.Options 
-                      className="absolute mt-1 max-h-36 w-full overflow-auto rounded-md bg-gray-50 py-1 
+                      className="absolute mt-1 max-h-44 w-full overflow-auto rounded-md bg-gray-50 py-1 
                       shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none scrollbar-thin 
                       scrollbar-thumb-gray-400 scrollbar-thumb-rounded-md"
                     >
@@ -222,8 +225,9 @@ export default function UserInput({ creatures }) {
                 </div>
               </Combobox>
             </div>
-            <div className='grid grid-cols-2 grid-rows-4 gap-2 items-center'>
+            <div className='grid grid-cols-2 gap-2 items-center'>
               <div className='text-gray-100 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2'>HP :</div>
+              <div className='text-gray-100 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2'>AC :</div>
               <div className='text-gray-100 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2'>Initiative (total) :</div>
               <div className='text-gray-100 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2'>Bonus :</div>
               <div 
@@ -239,9 +243,9 @@ export default function UserInput({ creatures }) {
                 </div>
               </div>
               <input 
-                className="w-full border-0 rounded-lg pr-1 text-gray-800 
-                focus:ring-0 shadow-md focus:shadow-lg transition-shadow duration-300
-                col-start-2 col-end-3 row-start-1 row-end-2 bg-gray-100"
+                className="w-full border-0 rounded-lg pr-1 text-gray-800 row-start-1 row-end-2 col-start-2 col-end-3 
+                focus:ring-0 shadow-md focus:shadow-lg transition-shadow duration-300 text-sm
+                 bg-gray-100"
                 type='number'
                 placeholder='0'
                 min={0}
@@ -249,9 +253,19 @@ export default function UserInput({ creatures }) {
                 onChange={(e) => setHp(e.target.value)}
               />
               <input 
-                className="w-full border-0 rounded-lg pr-1 text-gray-800 
-                focus:ring-0 shadow-md focus:shadow-lg transition-shadow duration-300
-                col-start-2 col-end-3 row-start-2 row-end-3 bg-gray-100"
+                className="w-full border-0 rounded-lg pr-1 text-gray-800 row-start-2 row-end-3 col-start-2 col-end-3
+                focus:ring-0 shadow-md focus:shadow-lg transition-shadow duration-300 text-sm
+                 bg-gray-100"
+                type='number'
+                placeholder='0'
+                min={0}
+                value={ac}
+                onChange={(e) => setAc(e.target.value)}
+              />
+              <input 
+                className="w-full border-0 rounded-lg pr-1 text-gray-800 row-start-3 row-end-4 col-start-2 col-end-3
+                focus:ring-0 shadow-md focus:shadow-lg transition-shadow duration-300 text-sm
+                 bg-gray-100"
                 type='number'
                 placeholder='0'
                 min={-11}
@@ -260,9 +274,9 @@ export default function UserInput({ creatures }) {
                 onChange={(e) => setInit(e.target.value)}
               />
               <input 
-                className="w-full border-0 rounded-lg pr-1 text-gray-800 
-                focus:ring-0 shadow-md focus:shadow-lg transition-shadow duration-300
-                col-start-2 col-end-3 row-start-3 row-end-4 bg-gray-100"
+                className="w-full border-0 rounded-lg pr-1 text-gray-800 row-start-4 row-end-5 col-start-2 col-end-3
+                focus:ring-0 shadow-md focus:shadow-lg transition-shadow duration-300 text-sm
+                 bg-gray-100"
                 type='number'
                 placeholder='DEX'
                 min={-10}
@@ -271,7 +285,7 @@ export default function UserInput({ creatures }) {
                 onChange={(e) => setBonus(e.target.value)}
               />
               <button className='bg-gray-100 text-gray-800 p-2 rounded-md w-full
-              font-semibold col-start-2 col-end-3'>
+              font-semibold '>
                 Add
               </button>
             </div>
