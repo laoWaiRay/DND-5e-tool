@@ -7,24 +7,21 @@ import Image from 'next/image'
 import { statuses as allStatuses } from '../statuses'
 
 export default function PopupStatus({ activeStatuses, setActiveStatuses, isOverflowed, isAvailableSpace, overflowStatuses, setOverflowStatuses }) {
-  const [selectedStatus, setSelectedStatus] = useState(allStatuses[0]);
+  const [selectedStatus, setSelectedStatus] = useState('');
   const [query, setQuery] = useState('')
   const [statuses, setStatuses] = useState(allStatuses)
 
   useEffect(() => {
+    if (!selectedStatus)
+      return
     let newStatuses = [...allStatuses];
     newStatuses = newStatuses.filter((status) => 
       !activeStatuses.find((el) => el.name == status.name) && !overflowStatuses.find((el) => el.name == status.name)
       )
+
     setStatuses(newStatuses)
-    if (newStatuses.length > 0)
-      setSelectedStatus(newStatuses[0])
-    else
-    {
-      setSelectedStatus('');
-      // setQuery('')
-    }
-      
+    setSelectedStatus('')
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeStatuses, overflowStatuses])
 
   const filteredStatuses =
@@ -94,6 +91,7 @@ export default function PopupStatus({ activeStatuses, setActiveStatuses, isOverf
                         displayValue={(status) => status.name}
                         onChange={(event) => setQuery(event.target.value)}
                         spellCheck='false'
+                        autoFocus={true}
                       />
                       {selectedStatus &&
                         (
@@ -126,9 +124,6 @@ export default function PopupStatus({ activeStatuses, setActiveStatuses, isOverf
                       shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none scrollbar-thin 
                       scrollbar-thumb-gray-400 scrollbar-thumb-rounded-md overflow-x-hidden"
                     >
-                      {/* {
-                        filteredStatuses.length === 0 
-                      } */}
                       {filteredStatuses.length === 0 && (query !== '' || (activeStatuses.length + overflowStatuses.length) >= allStatuses.length) ? (
                         <div className="relative cursor-default select-none py-0.5 px-3 text-gray-700">
                           Nothing found.
