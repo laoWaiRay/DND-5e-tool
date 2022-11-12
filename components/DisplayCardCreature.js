@@ -16,14 +16,6 @@ export default function DisplayCardCreature({ creatureData, windowSize }) {
   const statusBarInnerRef = useRef(null);
   const cardRef = useRef(null);
 
-  // useEffect(() => {
-  //   console.log('->', overflowStatuses)
-  // }, [overflowStatuses])
-
-  // useEffect(() => {
-  //   console.log(isHoverEllipses)
-  // },[isHoverEllipses])
-
   useEffect(() => {
     const elt = statusBarRef.current
     const inner = statusBarInnerRef.current

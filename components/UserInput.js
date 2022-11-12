@@ -50,7 +50,7 @@ export default function UserInput({ creatures }) {
           creature.name
             .toLowerCase()
             .replace(/\s+/g, '')
-            .includes(query.toLowerCase().replace(/\s+/g, ''))
+            .match(`^${query.toLowerCase().replace(/\s+/g, '')}`)
         )
   
   const addToCreaturesList = (e) => {
