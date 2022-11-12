@@ -19,7 +19,7 @@ export default function PopupAc({ creatureData }) {
 
   return (
     <>
-    <div ref={closeRef}></div>
+    <div className='hidden' ref={closeRef}></div>
     <Popover className="flex">
       <Popover.Button>
         <div className='relative'>

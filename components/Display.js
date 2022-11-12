@@ -1,10 +1,20 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRecoilState } from 'recoil'
 import { activeCreaturesState } from '../atoms/activeCreaturesAtom'
 import DisplayCardCreature from './DisplayCardCreature'
 
 export default function Display() {
-  const [activeCreatures, setActiveCreatures] = useRecoilState(activeCreaturesState)
+  const [activeCreatures, setActiveCreatures] = useRecoilState(activeCreaturesState);
+  const [windowSize, setWindowSize] = useState([0, 0]);
+
+  useEffect(() => {
+    const updateWindowSize = () => {
+      setWindowSize([window.innerWidth, window.innerHeight]);
+    }
+
+    window.addEventListener('resize', updateWindowSize);
+    return () => window.removeEventListener('resize', updateWindowSize);
+  }, []);
 
   return (
     <div className='w-full flex flex-col text-gray-500 max-w-2xl m-4 px-4'>
@@ -21,10 +31,11 @@ export default function Display() {
             </div>
           )
         : (
-            activeCreatures.map((creature, index) => (
+            activeCreatures.map((creature) => (
               <DisplayCardCreature 
                 key={creature.id}
                 creatureData={creature} 
+                windowSize={windowSize}
               />
             ))
           )

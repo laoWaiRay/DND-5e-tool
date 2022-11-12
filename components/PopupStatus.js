@@ -6,7 +6,7 @@ import { CheckCircleIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import { statuses as allStatuses } from '../statuses'
 
-export default function PopupStatus({ activeStatuses, setActiveStatuses, isOverflowed, overflowStatuses, setOverflowStatuses }) {
+export default function PopupStatus({ activeStatuses, setActiveStatuses, isOverflowed, isAvailableSpace, overflowStatuses, setOverflowStatuses }) {
   const [selectedStatus, setSelectedStatus] = useState(allStatuses[0]);
   const [query, setQuery] = useState('')
   const [statuses, setStatuses] = useState(allStatuses)
@@ -17,7 +17,14 @@ export default function PopupStatus({ activeStatuses, setActiveStatuses, isOverf
       !activeStatuses.find((el) => el.name == status.name) && !overflowStatuses.find((el) => el.name == status.name)
       )
     setStatuses(newStatuses)
-    setSelectedStatus(newStatuses[0])
+    if (newStatuses.length > 0)
+      setSelectedStatus(newStatuses[0])
+    else
+    {
+      setSelectedStatus('');
+      // setQuery('')
+    }
+      
   }, [activeStatuses, overflowStatuses])
 
   const filteredStatuses =
@@ -33,15 +40,19 @@ export default function PopupStatus({ activeStatuses, setActiveStatuses, isOverf
   const addStatus = (e, close) => {
     e.preventDefault()
 
-    if (isOverflowed) {
-      const newStatusesArray = [...overflowStatuses];
-      newStatusesArray.push(selectedStatus);
-      setOverflowStatuses(newStatusesArray);
+    if (!selectedStatus)
+      return
+    
+    const newOverflowArray = [...overflowStatuses];
+    const newStatusesArray = [...activeStatuses];
+
+    if (isOverflowed || isAvailableSpace == false) {
+      newOverflowArray.push(selectedStatus);
     } else {
-      const newStatusesArray = [...activeStatuses];
       newStatusesArray.push(selectedStatus);
-      setActiveStatuses(newStatusesArray);
     }
+    setOverflowStatuses(newOverflowArray);
+    setActiveStatuses(newStatusesArray);
     
     close();
   }
@@ -84,9 +95,14 @@ export default function PopupStatus({ activeStatuses, setActiveStatuses, isOverf
                         onChange={(event) => setQuery(event.target.value)}
                         spellCheck='false'
                       />
-                      <div className='absolute right-8 top-2'>
-                        <Image src={selectedStatus.url} alt='Concentration' width={16} height={16} />
-                      </div>
+                      {selectedStatus &&
+                        (
+                          <div className='absolute right-8 top-2'>
+                            <Image src={selectedStatus.url} alt={selectedStatus.name} width={16} height={16} />
+                          </div>
+                        )
+                      }
+                      
                     </div>
                     <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
                       <ChevronUpDownIcon
@@ -110,7 +126,10 @@ export default function PopupStatus({ activeStatuses, setActiveStatuses, isOverf
                       shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none scrollbar-thin 
                       scrollbar-thumb-gray-400 scrollbar-thumb-rounded-md overflow-x-hidden"
                     >
-                      {filteredStatuses.length === 0 && query !== '' ? (
+                      {/* {
+                        filteredStatuses.length === 0 
+                      } */}
+                      {filteredStatuses.length === 0 && (query !== '' || (activeStatuses.length + overflowStatuses.length) >= allStatuses.length) ? (
                         <div className="relative cursor-default select-none py-0.5 px-3 text-gray-700">
                           Nothing found.
                         </div>

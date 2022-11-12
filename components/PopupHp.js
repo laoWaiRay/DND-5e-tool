@@ -29,10 +29,8 @@ export default function PopupHp({ creatureData }) {
     }
 
     if (parseInt(hp) + parseInt(input) >= parseInt(creatureData.max_hp)) {
-      console.log('here1')
       setHp(parseInt(creatureData.max_hp))
     } else {
-      console.log('here2')
       setHp(parseInt(hp) + parseInt(input))
     }
     setInput(0)
@@ -121,7 +119,7 @@ export default function PopupHp({ creatureData }) {
 
   return (
     <>
-      <div div ref={closeRef}></div>
+      <div className='hidden' ref={closeRef}></div>
       <Popover className="flex">
         {({ close }) => (
           <>
