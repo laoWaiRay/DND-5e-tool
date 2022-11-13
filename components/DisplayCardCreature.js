@@ -61,16 +61,23 @@ export default function DisplayCardCreature({ creatureData, windowSize }) {
     if (cardRef.current.clientWidth < cardRef.current.scrollWidth)
       window.dispatchEvent(new Event('resize'))
   }, [windowSize])
+
+  const handleDelete = () => {
+    console.log(creatureData, activeCreatures)
+    let newActiveCreatures = [...activeCreatures]
+    newActiveCreatures = newActiveCreatures.filter((creature) => creature.id != creatureData.id)
+    setActiveCreatures(newActiveCreatures)
+  }
  
   return (
-    <div className='relative rounded-md border border-gray-700 fix-borders z-auto'>
+    <div className={`relative rounded-md border border-gray-700 fix-borders z-auto ${isSlid && 'overflow-hidden'}`}>
       {/* Underlay */}
       <div 
         className='absolute bg-gray-900 top-0 left-0 w-full h-full rounded-md flex 
         justify-end items-center'
       >
         <div className='bg-red-500 rounded-md mr-1.5 p-1 cursor-pointer'
-          onClick={() => console.log('clicked')}
+          onClick={handleDelete}
         >
           <XMarkIcon className='w-5 h-5 text-white'/>
         </div>
@@ -78,7 +85,7 @@ export default function DisplayCardCreature({ creatureData, windowSize }) {
 
       {/* Main Card */}
       <div 
-        className={`flex py-3 border-0 bg-gray-800 text-stone-300
+        className={`flex py-3 border-0 bg-gray-800 text-stone-300 
         rounded-md shadow-md relative top-0 left-0 px-3 w-full space-x-2 pr-1 transition-transform duration-200
         ${isSlid && '-translate-x-10'}`}
         ref={cardRef}

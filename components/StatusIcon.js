@@ -60,7 +60,7 @@ export default function StatusIcon({ stat, activeStatuses, overflowStatuses, set
             >
               <div 
                 className='absolute top-[33px] p-2 w-fit bg-gray-900 border border-gray-400 rounded-md 
-                pointer-events-none left-1/2 right-1/2 -translate-x-1/2'
+                pointer-events-none left-1/2 right-1/2 -translate-x-1/2 z-50'
               >
                 <span className='whitespace-nowrap flex-1'>{stat.name}</span>
               </div>
