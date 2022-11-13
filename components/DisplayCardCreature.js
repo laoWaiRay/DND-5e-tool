@@ -5,6 +5,7 @@ import PopupStatus from './PopupStatus'
 import PopupAc from './PopupAc'
 import PopupHp from './PopupHp'
 import PopupOverflow from './PopupOverflow'
+import StatusIcon from './StatusIcon'
 
 export default function DisplayCardCreature({ creatureData, windowSize }) {
   const [activeStatuses, setActiveStatuses] = useState([]);
@@ -20,7 +21,8 @@ export default function DisplayCardCreature({ creatureData, windowSize }) {
     const elt = statusBarRef.current
     const inner = statusBarInnerRef.current
     let isOverflowing = elt.clientWidth < elt.scrollWidth;
-    let isSpace = elt.clientWidth - inner.clientWidth > 40;
+    let isSpace = elt.clientWidth - inner.clientWidth > 30;
+    // console.log(elt.clientWidth - inner.clientWidth)
 
     if (isOverflowing)
       setIsOverflowed(true)
@@ -78,7 +80,7 @@ export default function DisplayCardCreature({ creatureData, windowSize }) {
       />
       {/* Statuses */}
       <div 
-        className='flex flex-1 items-center space-x-2 overflow-visible'
+        className='flex flex-1 items-center space-x-2 px-1 overflow-visible'
         ref={statusBarRef}
       >        
         <div className='inline-flex space-x-2 overflow-visible items-center'
@@ -86,7 +88,14 @@ export default function DisplayCardCreature({ creatureData, windowSize }) {
         >
           {
             activeStatuses.map((stat) => (
-              <Image key={stat.id} src={stat.url} alt={stat.name} width={16} height={16} />
+              <StatusIcon 
+                key={stat.id}
+                stat={stat}
+                activeStatuses={activeStatuses}
+                setActiveStatuses={setActiveStatuses}
+                overflowStatuses={overflowStatuses}
+                setOverflowStatuses={setOverflowStatuses}
+              />
             ))
           }
 

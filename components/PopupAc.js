@@ -40,14 +40,14 @@ export default function PopupAc({ creatureData }) {
 
       <Popover.Panel className="absolute top-[49px] z-50 left-0">
         {({ close }) => (
-          <div className="bg-gray-900 border border-gray-600 p-4 rounded-md">
+          <div className="bg-gray-900 border border-gray-400 p-4 rounded-md">
             <div
               className='absolute w-0 h-0 bg-transparent left-5 -top-7 border-[16px] 
               border-gray-900 border-t-transparent border-r-transparent border-l-transparent
               border-b-gray-900'
             >
-              <div className='absolute bg-gray-600 w-[18px] h-[1px] rotate-45 top-[5px] -right-[15px]' />
-              <div className='absolute bg-gray-600 w-[17px] h-[1px] -rotate-45 top-[5px] -left-[14.5px]' />
+              <div className='absolute bg-gray-400 w-[18px] h-[1px] rotate-45 top-[5px] -right-[15px]' />
+              <div className='absolute bg-gray-400 w-[17px] h-[1px] -rotate-45 top-[5px] -left-[14.5px]' />
             </div>
 
             <form 
