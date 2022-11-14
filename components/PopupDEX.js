@@ -1,72 +1,55 @@
 import { Popover } from '@headlessui/react'
-import React, { useEffect, useRef, useState } from 'react'
-import ShieldIcon from './ShieldIcon'
 import { CheckCircleIcon } from '@heroicons/react/24/outline'
+import React, { useRef, useState } from 'react'
+import { useRecoilState } from 'recoil'
+import { activeCreaturesState } from '../atoms/activeCreaturesAtom'
 
-
-export default function PopupAc({ creatureData }) {
-  const [baseAcInput, setBaseAcInput] = useState(creatureData.ac)
-  const [baseAc, setBaseAc] = useState(creatureData.ac);
-  const [bonusAcInput, setBonusAcInput] = useState(0);
-  const [bonusAc, setBonusAc] = useState(0);
+export default function PopupDEX({ creatureData }) {
+  const [activeCreatures, setActiveCreatures] = useRecoilState(activeCreaturesState);
+  const [dexBonusOpen, setDexBonusOpen] = useState(false)
+  const [dexBonus, setDexBonus] = useState(creatureData.dex_bonus)
+  const [dexBonusInput, setDexBonusInput] = useState(creatureData.dex_bonus)
   const closeRef = useRef(null)
-  const popupRef = useRef(null)
-
-  useEffect(() => {
-    setBaseAcInput(baseAc)
-    setBonusAcInput(bonusAc)
-  }, [bonusAc, baseAc])
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    setBaseAc(parseInt(baseAcInput));
-    setBonusAc(parseInt(bonusAcInput));
+    e.preventDefault()
+    const newCreatureData = { ...creatureData }
+    newCreatureData.dex_bonus = parseInt(dexBonusInput)
+    updateList(newCreatureData)
   }
 
-  const resetInputs = () => {
-    setBaseAcInput(baseAc)
-    setBonusAcInput(bonusAc)
-  }
-
-  const listenForClickOutside = (e) => {
-    if (!popupRef.current)
-    {
-      resetInputs()
-      document.removeEventListener('click', listenForClickOutside)
-    }
+  const updateList = (data) => {
+    let newArray = activeCreatures.filter((creature) => creature.id != creatureData.id)
+    newArray.push(data)
+    newArray.sort((a, b) => {
+      if (a.initiative != b.initiative) {
+        return parseInt(b.initiative) - parseInt(a.initiative)
+      }
+      else {
+        return parseInt(b.dex_bonus) - parseInt(a.dex_bonus)
+      }
+    })
+    setActiveCreatures(newArray)
   }
 
   return (
     <>
     <div className='hidden' ref={closeRef}></div>
     <Popover className="flex">
-      <Popover.Button
-        onClick={() => document.addEventListener('click', listenForClickOutside)}
-      >
-        <div className='relative'>
-          <div 
-            className='bg-gray-100 text-gray-800 w-8 flex justify-center rounded-full select-none 
-            cursor-pointer ring-1 ring-gray-700'
-          >
-            {baseAc + bonusAc}
-          </div>
-          <div className='absolute -left-2.5 -top-2 w-4 h-4'>
-            <ShieldIcon className='fill-gray-400 stroke-gray-800 stroke-[1.5px] scale-[60%]'/>
-          </div>
-          <div className='absolute -left-2.5 -top-2 w-4 h-4'>
-            <ShieldIcon className='fill-none stroke-gray-800 stroke-[2px] scale-[38%]'/>
-          </div>
+      <Popover.Button>
+        <div
+          className='font-bold cursor-pointer px-1 aspect-square'
+          onClick={() => setDexBonusOpen(!dexBonusOpen)}
+        >
+          {creatureData.initiative}
         </div>
       </Popover.Button>
 
-      <Popover.Panel 
-        className="absolute top-[48px] z-50 left-0"
-      >
+      <Popover.Panel className="absolute top-[48px] z-50 left-0">
         {({ close }) => (
           <div 
             className='flex absolute z-10 -left-[1px] bg-gray-900 py-4 px-4 rounded-md 
             border border-gray-400 outline-none shadow-lg shadow-black'
-            ref={popupRef}
           >
             <div
               className='absolute w-0 h-0 bg-transparent left-5 -top-7 border-[16px] 
@@ -83,33 +66,37 @@ export default function PopupAc({ creatureData }) {
             >
               <div className='flex space-x-4'>
                 <div>
-                  <h2 className='pb-1 text-sm whitespace-nowrap'>Base AC</h2>
+                  <h2 className='pb-1 text-sm whitespace-nowrap'>Bonus DEX</h2>
                   <input
                     className='rounded-md py-0.5 pr-1 text-stone-700 focus:border-gray-600 focus:ring-gray-600'
                     type='number'
                     autoFocus={true}
-                    value={baseAcInput}
+                    value={dexBonusInput}
                     onChange= {(e) => {
                       if (!e.target.value)
                       {
-                        setBaseAcInput(0)
+                        setDexBonusInput(0)
                       }
                       else if (e.target.value.length >= 3) {
-                        setBaseAcInput(Math.floor(parseInt(e.target.value) / 10))
+                        setDexBonusInput(Math.floor(parseInt(e.target.value) / 10))
                       }
                       else if (e.target.value[0] == '0') {
-                        setBaseAcInput(e.target.value.slice(-1))
+                        setDexBonusInput(e.target.value.slice(-1))
                       }
                       else {
-                        setBaseAcInput(parseInt(e.target.value))
+                        setDexBonusInput(parseInt(e.target.value))
                       }
                     }}
-                    min={0}
-                    max={99}
+                    min={-20}
+                    max={20}
                   />
                 </div>
+
+                <button className='ml-3'>
+                  <CheckCircleIcon className='w-8 h-8 hover:text-green-500 transition-colors duration-150 ease-in'/>
+                </button>   
                 
-                <div>
+                {/* <div>
                   <h2 className='pb-1 text-sm'>Bonuses</h2>
                   <input
                     className='rounded-md py-0.5 pr-1 text-stone-700 focus:border-gray-600 focus:ring-gray-600'
@@ -133,12 +120,8 @@ export default function PopupAc({ creatureData }) {
                     min={0}
                     max={99}
                   />
-                </div>
+                </div> */}
               </div>
-              
-              <button className='ml-3'>
-                <CheckCircleIcon className='w-8 h-8 hover:text-green-500 transition-colors duration-150 ease-in'/>
-              </button>       
             </form>
           </div>
         )}

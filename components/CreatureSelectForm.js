@@ -116,12 +116,12 @@ export default function CreatureSelectForm({ creatures, tab }) {
 
   return (
     <form 
-      className={`p-4 text-gray-800 grid grid-cols-[1fr_1fr_minmax(125px,1fr)] gap-2 transition-all duration-200
+      className={`p-4 text-gray-800 grid grid-cols-[1fr_1fr_minmax(125px,1fr)] gap-2 transition-all 
+      duration-150 ease-in-out overflow-hidden
       ${tab === 'player' ? 'h-[160px]' : 'h-[248px]'}`}
       onSubmit={tab == 'player' ? addPlayerToList : addCreatureToList}
     >
       <div className='col-span-2'>
-        {/* Problem is here */}
         {
           tab === 'player' || tab === 'custom' ?
             (
@@ -248,7 +248,34 @@ export default function CreatureSelectForm({ creatures, tab }) {
             <Image src='/images/d20-light.png' alt='d20' width={28} height={28} className='h-auto w-auto' /> 
           </div>
         </div>
-        <Transition
+        {
+          tab !== 'player' &&
+          (
+            <>
+              <input 
+                className="w-full row-start-1 row-end-2 col-start-2 col-end-3 border-0 rounded-lg pr-1 text-gray-800 
+                focus:ring-0 shadow-md focus:shadow-lg transition-shadow duration-300 text-sm
+                  bg-gray-100"
+                type='number'
+                placeholder='0'
+                min={0}
+                value={hp}
+                onChange={(e) => setHp(e.target.value)}
+              />
+              <input 
+                className="w-full row-start-2 row-end-3 col-start-2 col-end-3 border-0 rounded-lg pr-1 text-gray-800 
+                focus:ring-0 shadow-md focus:shadow-lg transition-shadow duration-300 text-sm
+                  bg-gray-100"
+                type='number'
+                placeholder='0'
+                min={0}
+                value={ac}
+                onChange={(e) => setAc(e.target.value)}
+              />
+            </>
+          )
+        }
+        {/* <Transition
           className='w-full row-start-1 row-end-2 col-start-2 col-end-3'
           show={tab != 'player'}
           enter="transition-opacity duration-75 delay-400"
@@ -280,17 +307,17 @@ export default function CreatureSelectForm({ creatures, tab }) {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-            <input 
-              className="w-full border-0 rounded-lg pr-1 text-gray-800 
-              focus:ring-0 shadow-md focus:shadow-lg transition-shadow duration-300 text-sm
-                bg-gray-100"
-              type='number'
-              placeholder='0'
-              min={0}
-              value={ac}
-              onChange={(e) => setAc(e.target.value)}
-            />
-          </Transition>
+          <input 
+            className="w-full border-0 rounded-lg pr-1 text-gray-800 
+            focus:ring-0 shadow-md focus:shadow-lg transition-shadow duration-300 text-sm
+              bg-gray-100"
+            type='number'
+            placeholder='0'
+            min={0}
+            value={ac}
+            onChange={(e) => setAc(e.target.value)}
+          />
+        </Transition> */}
         
         <input 
           className={`w-full border-0 rounded-lg pr-1 text-gray-800 col-start-2 col-end-3

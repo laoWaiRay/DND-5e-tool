@@ -7,6 +7,7 @@ import PopupOverflow from './PopupOverflow'
 import StatusIcon from './StatusIcon'
 import { activeCreaturesState } from '../atoms/activeCreaturesAtom'
 import { useRecoilState } from 'recoil'
+import PopupDEX from './PopupDEX'
 
 export default function DisplayCardCreature({ creatureData, windowSize }) {
   const [activeCreatures, setActiveCreatures] = useRecoilState(activeCreaturesState);
@@ -61,6 +62,7 @@ export default function DisplayCardCreature({ creatureData, windowSize }) {
     setActiveStatuses(newStatusesArray);
     setOverflowStatuses(newOverflowArray);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [windowSize, isOverflowed, isAvailableSpace]);
 
   useEffect(() => {
@@ -201,9 +203,21 @@ export default function DisplayCardCreature({ creatureData, windowSize }) {
           />
 
           {/* Initiative */}
-          <div className='font-bold select-none'>
-            {creatureData.initiative}
-            {/* ( {creatureData.dex_bonus}  */}
+          <div>
+            {/* <span 
+              className='font-bold cursor-pointer px-1 aspect-square'
+              onClick={() => setDexBonusOpen(!dexBonusOpen)}
+            >
+              {creatureData.initiative}
+            </span> */}
+            {/* {dexBonusOpen && (
+              <div className='absolute top-[49px] right-0 bg-gray-900 p-3 rounded-md text-gray-100'>
+                <span className='whitespace-nowrap'>Bonus DEX: {creatureData.dex_bonus}</span>
+              </div>
+            )} */}
+            <PopupDEX 
+              creatureData={creatureData}
+            />
           </div> 
         </div>
 

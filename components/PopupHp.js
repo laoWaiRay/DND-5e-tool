@@ -10,20 +10,44 @@ export default function PopupHp({ creatureData }) {
   const [hp, setHp] = useState(parseInt(creatureData.max_hp))
   const [tmpHp, setTmpHp] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
+  const [listenerActive, setListenerActive] = useState(false)
   const closeRef = useRef(null)
+  const popupRef = useRef(null)
 
   useEffect(() => {
-    console.log(creatureData)
-  }, [creatureData])
+    if (listenerActive)
+      return
 
-  useEffect(() => {
+    setTmpHpInput(prev => {
+      return tmpHp
+    })
+  }, [tmpHp, listenerActive])
+
+  const resetInputs = () => {
     setTmpHpInput(tmpHp)
-  }, [tmpHp])
+    setInput(0)
+  }
+
+  const listenForClickOutside = (e) => {
+    setListenerActive(true)
+    if (!popupRef.current)
+    {
+      resetInputs()
+      setListenerActive(false)
+      document.removeEventListener('click', listenForClickOutside)
+    }
+  }
+
+  const handleClickButton = (e) => {
+    if (!listenerActive)
+      document.addEventListener('click', listenForClickOutside)
+  }
 
   const heal = (e, close) => {
     e.preventDefault()
     if (!input)
     {
+      document.removeEventListener('click', listenForClickOutside)
       close(closeRef)
       return
     }
@@ -34,6 +58,7 @@ export default function PopupHp({ creatureData }) {
       setHp(parseInt(hp) + parseInt(input))
     }
     setInput(0)
+    document.removeEventListener('click', listenForClickOutside)
     close(closeRef)
   }
 
@@ -42,6 +67,7 @@ export default function PopupHp({ creatureData }) {
 
     if (!input)
     {
+      document.removeEventListener('click', listenForClickOutside)
       close(closeRef)
       return
     }
@@ -59,6 +85,7 @@ export default function PopupHp({ creatureData }) {
       else
       {
         setTmpHp(tmpHpBuffer - damageBuffer);
+        document.removeEventListener('click', listenForClickOutside)
         close(closeRef)
         return
       }
@@ -69,12 +96,14 @@ export default function PopupHp({ creatureData }) {
     } else {
       setHp(parseInt(hp) - damageBuffer)
     }
+    document.removeEventListener('click', listenForClickOutside)
     close(closeRef)
   }
 
   const changeTmpHp = (e, close) => {
     e.preventDefault()
     setTmpHp(parseInt(tmpHpInput))
+    document.removeEventListener('click', listenForClickOutside)
     close(closeRef)
   }
 
@@ -123,7 +152,9 @@ export default function PopupHp({ creatureData }) {
       <Popover className="flex">
         {({ close }) => (
           <>
-          <Popover.Button>
+          <Popover.Button
+            onClick={handleClickButton}
+          >
             <div className='relative'>
               <div 
                 className={`bg-gray-100 text-gray-800 w-10 flex justify-center rounded-full select-none 
@@ -140,9 +171,10 @@ export default function PopupHp({ creatureData }) {
           <Popover.Panel className="absolute top-[49px] z-50 left-0 w-full"> 
               <div 
                 className='flex absolute z-10 -bottom-[103px] -left-[1px] bg-gray-900 py-4 px-4 rounded-md 
-                border border-gray-400 outline-none shadow-md shadow-gray-900'
+                border border-gray-400 outline-none shadow-lg shadow-black'
                 onKeyDown={(e) => handleKeyDown(e, close)}
                 tabIndex='0'
+                ref={popupRef}
               >
                 <div
                   className='absolute w-0 h-0 bg-transparent left-5 -top-7 border-[16px] 
