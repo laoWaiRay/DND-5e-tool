@@ -22,6 +22,7 @@ export default function DisplayCardCreature({ creatureData, windowSize }) {
   const statusBarInnerRef = useRef(null);
   const cardRef = useRef(null);
   const elementRef = useRef(null)
+  const nameRef = useRef(null)
 
   useEffect(() => {
     console.log(activeStatuses)
@@ -96,6 +97,13 @@ export default function DisplayCardCreature({ creatureData, windowSize }) {
     return () => window.removeEventListener('click', detectClick)
   }, [isSlid])
 
+  useEffect(() => {
+    if (creatureData.color)
+    {
+      nameRef.current.style.color = creatureData.color;
+    }
+  }, [creatureData])
+
   const handleDelete = () => {
     console.log(creatureData, activeCreatures)
     let newActiveCreatures = [...activeCreatures]
@@ -130,7 +138,12 @@ export default function DisplayCardCreature({ creatureData, windowSize }) {
         <div className={`flex w-full space-x-2 top-0 left-0 ${isSlid && 'pointer-events-none'}`}>
           {/* Name */}
           <div className='cursor-pointer'>
-            <span className={`${creatureData.pc && 'text-amber-300'}`}>{creatureData.name}</span>
+            <span 
+              className={`${creatureData.pc && 'text-amber-300'}`}
+              ref={nameRef}
+            >
+              {creatureData.name}
+            </span>
           </div>
           {/* Hp */}
           { creatureData.pc === false &&
@@ -204,17 +217,6 @@ export default function DisplayCardCreature({ creatureData, windowSize }) {
 
           {/* Initiative */}
           <div>
-            {/* <span 
-              className='font-bold cursor-pointer px-1 aspect-square'
-              onClick={() => setDexBonusOpen(!dexBonusOpen)}
-            >
-              {creatureData.initiative}
-            </span> */}
-            {/* {dexBonusOpen && (
-              <div className='absolute top-[49px] right-0 bg-gray-900 p-3 rounded-md text-gray-100'>
-                <span className='whitespace-nowrap'>Bonus DEX: {creatureData.dex_bonus}</span>
-              </div>
-            )} */}
             <PopupDEX 
               creatureData={creatureData}
             />

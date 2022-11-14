@@ -4,6 +4,7 @@ import Image from 'next/image'
 import React, { Fragment, useState, useEffect, useRef } from 'react'
 import { useRecoilState } from 'recoil'
 import { activeCreaturesState } from '../atoms/activeCreaturesAtom'
+import chroma from "chroma-js"
 
 export default function CreatureSelectForm({ creatures, tab }) {
   const [selectedCreature, setSelectedCreature] = useState('')
@@ -15,7 +16,24 @@ export default function CreatureSelectForm({ creatures, tab }) {
   const [bonus, setBonus] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
   const [activeCreatures, setActiveCreatures] = useRecoilState(activeCreaturesState);
+  const [colors, setColors] = useState([])
   const d20Ref = useRef(null);
+
+  useEffect(() => {
+    // [hash]212936
+    const randColorsArray = [];
+    for (let i = 0; i < 100; i++)
+    {
+      let randColor = chroma.random();
+      while(chroma.contrast(randColor, '#212936') < 4.5)
+      {
+        randColor = chroma.random()
+      }
+      randColorsArray.push(randColor)
+    }
+    
+    setColors(randColorsArray)
+  }, [])
 
   const filteredCreatures =
   query === ''
@@ -46,7 +64,45 @@ export default function CreatureSelectForm({ creatures, tab }) {
   }
 
   const updateList = (data) => {
-    const newArray = [ ...activeCreatures, data ]
+    let newArray = [ ...activeCreatures, data ]
+    let flag = false
+
+    outerloop:
+    for (let i = 0; i < newArray.length; i++)
+    {
+      for (let j = i; j < newArray.length; j++)
+      {
+        if (newArray[i].name == data.name && newArray[i].id != data.id)
+        {
+          flag = true
+          break outerloop
+        }
+      }
+    }
+
+    if (flag)
+    {
+      for (let i = 0; i < newArray.length; i++)
+      {
+        if (!newArray[i].color && newArray[i].name == data.name)
+        {
+          const usedColors = newArray.map((elt) => {
+            if (elt.color != null && elt.name == data.name)
+              return elt.color
+            else
+              return
+          })
+          
+          const availableColors = colors.filter((color) => !usedColors.includes(color))
+          const newItem = {
+            ...newArray[i]
+          }
+          newItem.color = availableColors[Math.floor(Math.random() * availableColors.length)]
+          newArray[i] = newItem
+        }
+      }
+    }
+
     newArray.sort((a, b) => {
       if (a.initiative != b.initiative) {
         return parseInt(b.initiative) - parseInt(a.initiative)
@@ -55,6 +111,7 @@ export default function CreatureSelectForm({ creatures, tab }) {
         return parseInt(b.dex_bonus) - parseInt(a.dex_bonus)
       }
     })
+    // console.log(newArray)
     setActiveCreatures(newArray)
   }
 
@@ -69,7 +126,8 @@ export default function CreatureSelectForm({ creatures, tab }) {
       initiative: init,
       dex_bonus: bonus,
       ac: ac,
-      pc: false   // player character
+      pc: false,  // Player Character
+      color: null
     }
     updateList(selectedCreatureData)
   }

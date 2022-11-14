@@ -75,7 +75,7 @@ export default function UserInput({ creatures }) {
         leaveFrom="translate-y-0"
         leaveTo="translate-y-52"
       >
-        <div className='w-screen animate-hideScroll'>
+        <div className='w-screen animate-hideScroll mt-10'>
           <div 
             className='w-10 h-8 bg-gray-900 flex items-center justify-center fixed bottom-0
             ml-auto mr-auto text-center left-0 right-0 border border-gray-400 border-b-transparent rounded-t-md
