@@ -16,9 +16,15 @@ export default function DisplayCardCreature({ creatureData, windowSize }) {
   const [isOverflowed, setIsOverflowed] = useState(false);
   const [isAvailableSpace, setIsAvailableSpace] = useState(false);
   const [isSlid, setIsSlid] = useState(false)
+  const [isSliding, setIsSliding] = useState(false)
   const statusBarRef = useRef(null);
   const statusBarInnerRef = useRef(null);
   const cardRef = useRef(null);
+  const elementRef = useRef(null)
+
+  useEffect(() => {
+    console.log(activeStatuses)
+  }, [activeStatuses])
 
   useEffect(() => {
     const elt = statusBarRef.current
@@ -62,6 +68,32 @@ export default function DisplayCardCreature({ creatureData, windowSize }) {
       window.dispatchEvent(new Event('resize'))
   }, [windowSize])
 
+  useEffect(() => {
+    if (!isSlid)
+    {
+      setTimeout(() => {
+        setIsSliding(false)
+      }, 200);
+    }
+    
+  }, [isSlid])
+
+  const detectClick = (e) => {
+    console.dir(e.target)
+    if (elementRef.current && !elementRef.current.contains(e.target))
+      setIsSlid(false)
+  }
+
+  useEffect(() => {
+    if (isSlid) {
+      window.addEventListener('click', detectClick)
+    } else {
+      window.removeEventListener('click', detectClick)
+    }
+
+    return () => window.removeEventListener('click', detectClick)
+  }, [isSlid])
+
   const handleDelete = () => {
     console.log(creatureData, activeCreatures)
     let newActiveCreatures = [...activeCreatures]
@@ -70,7 +102,10 @@ export default function DisplayCardCreature({ creatureData, windowSize }) {
   }
  
   return (
-    <div className={`relative rounded-md border border-gray-700 fix-borders z-auto ${isSlid && 'overflow-hidden'}`}>
+    <div 
+      className={`relative rounded-md border border-gray-700 fix-borders z-auto ${(isSlid || isSliding) && 'overflow-hidden'}`}
+      ref={elementRef}
+    >
       {/* Underlay */}
       <div 
         className='absolute bg-gray-900 top-0 left-0 w-full h-full rounded-md flex 
@@ -93,16 +128,21 @@ export default function DisplayCardCreature({ creatureData, windowSize }) {
         <div className={`flex w-full space-x-2 top-0 left-0 ${isSlid && 'pointer-events-none'}`}>
           {/* Name */}
           <div className='cursor-pointer'>
-            {creatureData.name}
+            <span className={`${creatureData.pc && 'text-amber-300'}`}>{creatureData.name}</span>
           </div>
           {/* Hp */}
-          <PopupHp 
-            creatureData={creatureData}
-          />
+          { creatureData.pc === false &&
+            <PopupHp 
+              creatureData={creatureData}
+            />
+          }
           {/* AC */}
-          <PopupAc 
-            creatureData={creatureData}
-          />
+          { creatureData.pc === false &&
+            <PopupAc 
+              creatureData={creatureData}
+            />
+          }
+          
           {/* Statuses */}
           <div 
             className='flex flex-1 items-center space-x-2 px-1 overflow-visible'
@@ -111,10 +151,10 @@ export default function DisplayCardCreature({ creatureData, windowSize }) {
             <div className='inline-flex space-x-2 overflow-visible items-center'
               ref={statusBarInnerRef}
             >
-              {
+              { 
                 activeStatuses.map((stat) => (
                   <StatusIcon 
-                    key={stat.id}
+                    key={stat.u_id}
                     stat={stat}
                     activeStatuses={activeStatuses}
                     setActiveStatuses={setActiveStatuses}
@@ -171,7 +211,7 @@ export default function DisplayCardCreature({ creatureData, windowSize }) {
         <div className='flex items-center border-l border-l-gray-600 pl-1'>
           <ChevronLeftIcon 
             className={`w-5 h-5 cursor-pointer duration-200 transition-transform ${ isSlid && 'rotate-180'}`}
-            onClick={() => setIsSlid(!isSlid)}
+            onClick={() => {setIsSlid(!isSlid); setIsSliding(true)}}
           />
         </div>
       </div>

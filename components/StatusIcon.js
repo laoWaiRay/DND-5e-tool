@@ -18,9 +18,10 @@ export default function StatusIcon({ stat, activeStatuses, overflowStatuses, set
   const handleClose = (e, close) => {
     const newOverflowArray = [...overflowStatuses]
     let newStatusesArray = [...activeStatuses]
-    const id = e.target.dataset.id
-    newStatusesArray = newStatusesArray.filter((condition) => condition.id != id)
-    newStatusesArray.push(newOverflowArray.pop())
+    const name = e.target.dataset.name
+    newStatusesArray = newStatusesArray.filter((condition) => condition.name != name)
+    if (newOverflowArray.length > 0)
+      newStatusesArray.push(newOverflowArray.pop())
     setActiveStatuses(newStatusesArray)
     setOverflowStatuses(newOverflowArray)
     setIsHovering(false)
@@ -85,7 +86,7 @@ export default function StatusIcon({ stat, activeStatuses, overflowStatuses, set
                   <div 
                     className='absolute -top-2 -right-3 bg-gray-900 rounded-full cursor-pointer pointer-events-auto'
                     onClick={(e) => handleClose(e, close)} 
-                    data-id={stat.id}
+                    data-name={stat.name}
                   >
                     <XCircleIcon
                       className='w-6 h-6 text-red-600 pointer-events-none'

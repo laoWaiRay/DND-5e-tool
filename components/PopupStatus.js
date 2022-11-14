@@ -41,14 +41,19 @@ export default function PopupStatus({ activeStatuses, setActiveStatuses, isOverf
 
     if (!selectedStatus)
       return
+
+    const selectedStatusWithId = {
+      ...selectedStatus,
+      u_id: Math.random()
+    }
     
     const newOverflowArray = [...overflowStatuses];
     const newStatusesArray = [...activeStatuses];
 
     if (isOverflowed || isAvailableSpace == false) {
-      newOverflowArray.push(selectedStatus);
+      newOverflowArray.push(selectedStatusWithId);
     } else {
-      newStatusesArray.push(selectedStatus);
+      newStatusesArray.push(selectedStatusWithId);
     }
     setOverflowStatuses(newOverflowArray);
     setActiveStatuses(newStatusesArray);
@@ -131,7 +136,7 @@ export default function PopupStatus({ activeStatuses, setActiveStatuses, isOverf
                         </div>
                       ) : (
                         filteredStatuses.map((status) => (
-                          <div key={status.id} className='relative'>
+                          <div key={status.u_id} className='relative'>
                             <Combobox.Option
                               className={({ active }) =>
                                 `relative cursor-default select-none py-0.5 px-3 ${
