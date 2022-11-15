@@ -1,27 +1,44 @@
 import { Transition } from '@headlessui/react'
-import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'
-import React, { useState } from 'react'
+import { ChevronDownIcon, ChevronUpIcon, ChevronDoubleUpIcon } from '@heroicons/react/24/solid'
+import React, { useEffect, useRef, useState } from 'react'
 import CreatureSelectForm from './CreatureSelectForm'
 
 export default function UserInput({ creatures }) {
   const [tab, setTab] = useState('player');
   const [isHidden, setIsHidden] = useState(false);
+  const pageBottomRef = useRef(null)
+
+  useEffect(() => {
+    if (isHidden)
+      return
+
+    setTimeout(() => {
+      pageBottomRef.current?.scrollIntoView()
+    }, 300);
+  }, [isHidden, tab])
+
+  const scrollToTop = () => {
+    const top = document.getElementById('topOfTheRound');
+    if (!top)
+      return
+    top.scrollIntoView({ block: 'start' })
+  }
 
   return (
     <>
-    <div className='mt-auto relative'>
+    <div className='mt-auto relative max-w-2xl'>
       <Transition
         show={!isHidden}
         enter="transition-transform duration-150 delay-150"
         enterFrom="translate-y-80"
         enterTo="translate-y-0"
-        leave="transition-transform duration-150"
+        leave="transition-transform duration-300"
         leaveFrom="translate-y-0"
         leaveTo="translate-y-80"
       >
         <div 
           className='m-4 mb-0 mt-auto border bg-gray-800 text-gray-100 rounded-md max-w-4xl shadow-sm 
-          border-gray-700 flex transy-'
+          border-gray-700 flex'
         >
           <div className='grid grid-cols-3 flex-1'>
             <div 
@@ -57,7 +74,7 @@ export default function UserInput({ creatures }) {
           </div>
         </div>
         <div 
-          className='bg-gray-800 border-gray-700 m-4 mt-2 rounded-md max-w-2xl border shadow-md'
+          className='bg-gray-800 border-gray-700 m-4 mt-2 rounded-md border shadow-md'
         >
           <CreatureSelectForm 
             tab={tab}
@@ -66,26 +83,47 @@ export default function UserInput({ creatures }) {
         </div>
       </Transition>
     </div>
-    <Transition
-        show={isHidden}
-        enter="transition-transform duration-150 delay-150"
-        enterFrom="translate-y-52"
-        enterTo="translate-y-0"
-        leave="transition-transform duration-150"
-        leaveFrom="translate-y-0"
-        leaveTo="translate-y-52"
-      >
-        <div className='w-screen animate-hideScroll mt-10'>
-          <div 
-            className='w-10 h-8 bg-gray-900 flex items-center justify-center fixed bottom-0
-            ml-auto mr-auto text-center left-0 right-0 border border-gray-400 border-b-transparent rounded-t-md
-            cursor-pointer'
-            onClick={(e) => setIsHidden(false)}
+      <div className='w-screen absolute bottom-0 left-0 animate-hideScroll mt-10'>
+        <Transition
+          show={isHidden}
+        >
+          <Transition.Child
+            enter="transition-transform duration-150 delay-150"
+            enterFrom="translate-y-52"
+            enterTo="translate-y-0"
+            leave="transition-transform duration-150"
+            leaveFrom="translate-y-0"
+            leaveTo="translate-y-52"
           >
-            <ChevronUpIcon className='w-6 h-6 text-gray-100 '/>
-          </div>
-        </div>
-      </Transition>
+            <div 
+              className='w-10 h-8 bg-gray-900 flex items-center justify-center fixed bottom-0
+              ml-auto mr-auto text-center right-0 left-0 border border-gray-400 border-b-transparent rounded-t-md
+              cursor-pointer'
+              onClick={(e) => { setIsHidden(false); }}
+            >
+              <ChevronUpIcon className='w-6 h-6 text-gray-100 '/>
+            </div>
+          </Transition.Child>
+            
+          <Transition.Child
+            enter="transition-all duration-300 delay-[500ms]"
+            enterFrom="opacity-0 translate-y-10"
+            enterTo="opacity-100 translate-y-0"
+            leave="transition-all duration-500"
+            leaveFrom="opacity-100 translate-y-0"
+            leaveTo="opacity-0 translate-y-10"
+          >
+            <div 
+              className='absolute right-5 bottom-2.5 border-[1px] border-gray-300 rounded-full p-1 bg-opacity-0'
+              onClick={scrollToTop}
+            >
+              <ChevronDoubleUpIcon className='w-6 h-6 text-gray-300 bg-transparent' />
+            </div>
+          </Transition.Child>
+        </Transition>
+      </div>
+
+      <div className='text-white' ref={pageBottomRef}></div>
     </>
   )
 }

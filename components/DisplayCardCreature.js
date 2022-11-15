@@ -139,7 +139,7 @@ export default function DisplayCardCreature({ creatureData, windowSize }) {
           {/* Name */}
           <div className='cursor-pointer'>
             <span 
-              className={`${creatureData.pc && 'text-amber-300'}`}
+              className={`${creatureData.pc && 'text-amber-400'}`}
               ref={nameRef}
             >
               {creatureData.name}

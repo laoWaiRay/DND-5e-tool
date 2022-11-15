@@ -19,7 +19,10 @@ export default function Display() {
   return (
     <div className='w-full flex flex-col text-gray-500 max-w-2xl m-4 px-4 relative'>
       {activeCreatures.length != 0 &&
-        <div className='text-gray-300 font-semibold text-center mb-1 text-sm tracking-wide'>TOP OF THE ROUND</div>
+        <div
+          id='topOfTheRound'
+          className='text-gray-300 font-semibold text-center py-1.5 text-sm tracking-wide'>TOP OF THE ROUND
+        </div>
       }
       {activeCreatures.length 
         === 0
