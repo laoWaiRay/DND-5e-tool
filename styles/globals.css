@@ -31,6 +31,15 @@ a {
   border-bottom: 0;
 }
 
+.btn-shadow:hover {
+  box-shadow: rgba(198, 31, 232, 0.983) 0px 0px 1px 0px inset, rgba(174, 19, 213, 0.923) 0px 5px 10px -2px, rgba(186, 27, 207, 0.924) 0px 30px 60px -30px;
+  border-color: rgba(48, 8, 56, 0.983);
+}
+
+.btn-shadow:hover > * {
+  color: rgba(167, 12, 198, 0.983)
+}
+
 /* .dropdown {
   overflow: hidden;
 }
