@@ -5,22 +5,26 @@ import React, { Fragment, useState, useEffect, useRef } from 'react'
 import { useRecoilState } from 'recoil'
 import { activeCreaturesState } from '../atoms/activeCreaturesAtom'
 import chroma from "chroma-js"
+import NumericInput from 'react-numeric-input';
 
 export default function CreatureSelectForm({ creatures, tab }) {
   const [selectedCreature, setSelectedCreature] = useState('')
   const [query, setQuery] = useState('')
   const [name, setName] = useState('');
-  const [hp, setHp] = useState(0);
-  const [ac, setAc] = useState(0);
-  const [init, setInit] = useState(0);
-  const [bonus, setBonus] = useState(0);
+  const [hp, setHp] = useState('');
+  const [ac, setAc] = useState('');
+  const [init, setInit] = useState('');
+  const [bonus, setBonus] = useState('');
   const [isSpinning, setIsSpinning] = useState(false);
   const [activeCreatures, setActiveCreatures] = useRecoilState(activeCreaturesState);
   const [colors, setColors] = useState([])
   const d20Ref = useRef(null);
 
+  // useEffect(() => {
+  //   console.log(activeCreatures)
+  // }, [activeCreatures])
+
   useEffect(() => {
-    // [hash]212936
     const randColorsArray = [];
     for (let i = 0; i < 100; i++)
     {
@@ -60,7 +64,7 @@ export default function CreatureSelectForm({ creatures, tab }) {
       d20Ref.current.classList.remove('animate-spin-fast')
       setIsSpinning(false)
     }, 1000)
-    setInit(Math.floor(Math.random() * 20) + 1 + bonus)
+    setInit(Math.floor(Math.random() * 20) + 1 + parseInt(bonus))
   }
 
   const updateList = (data) => {
@@ -122,10 +126,10 @@ export default function CreatureSelectForm({ creatures, tab }) {
     const selectedCreatureData = {
       ...selectedCreature,
       id: Math.random(),
-      max_hp: hp,
-      initiative: init,
-      dex_bonus: bonus,
-      ac: ac,
+      max_hp: parseInt(hp),
+      initiative: parseInt(init),
+      dex_bonus: parseInt(bonus),
+      ac: parseInt(ac),
       pc: false,  // Player Character
       color: null
     }
@@ -139,11 +143,53 @@ export default function CreatureSelectForm({ creatures, tab }) {
     const playerData = {
       id: Math.random(),
       name: name,
-      initiative: init,
-      dex_bonus: bonus,
+      initiative: parseInt(init),
+      dex_bonus: parseInt(bonus),
       pc: true
     }
     updateList(playerData)
+  }
+
+  const addCustomToList = (e) => {
+    e.preventDefault()
+    if (!name)
+      return
+    const customData = {
+      id: Math.random(),
+      name: name,
+      max_hp: parseInt(hp),
+      initiative: parseInt(init),
+      dex_bonus: parseInt(bonus),
+      ac: parseInt(ac),
+      pc: false,  // Player Character
+      color: null
+    }
+    updateList(customData)
+  }
+
+  const handleChangeInput = (e, input, setInput, maxDigits) => {
+    console.log(e)
+
+    if (e.target.value.length > maxDigits) {
+      setInput(Math.floor(parseInt(e.target.value) / 10));
+    } else if (!e.target.value) {
+      setInput(e.nativeEvent.data);
+    } else if (e.target.value[0] == 0) {
+      if (e.nativeEvent.data == "-") {
+        console.log("lol");
+        setInput(e.nativeEvent.data);
+      } else {
+        console.log('lololol')
+        setInput(e.target.value.slice(-1));
+      }
+    } else {
+      setInput(e.target.value);
+    }
+  };
+
+  const clearZero = (e, input, setInput) => {
+    if (input == '0')
+      setInput('')
   }
 
   useEffect(() => {
@@ -177,7 +223,7 @@ export default function CreatureSelectForm({ creatures, tab }) {
       className={`p-4 text-gray-800 grid grid-cols-[1fr_1fr_minmax(125px,1fr)] gap-2 transition-all 
       duration-150 ease-in-out overflow-hidden
       ${tab === 'player' ? 'h-[160px]' : 'h-[248px]'}`}
-      onSubmit={tab == 'player' ? addPlayerToList : addCreatureToList}
+      onSubmit={tab == 'player' ? addPlayerToList : tab == 'creatures' ? addCreatureToList : addCustomToList}
     >
       <div className='col-span-2'>
         {
@@ -294,18 +340,22 @@ export default function CreatureSelectForm({ creatures, tab }) {
 
         <div className='text-gray-100 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2'>Initiative (total) :</div>
         <div className='text-gray-100 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2'>Bonus :</div>
-        <div 
-          className='text-gray-800 p-0.5 rounded-md text-center text-xs flex justify-center 
-          items-center col-start-1 col-end-2 cursor-pointer'
-          onClick={spinDice}
-        >
-          <div 
-            className='transition-transform duration-300'
-            ref={d20Ref}
-          >
-            <Image src='/images/d20-light.png' alt='d20' width={28} height={28} className='h-auto w-auto' /> 
-          </div>
-        </div>
+        {
+          tab != 'player' && (
+            <div 
+              className='text-gray-800 p-0.5 rounded-md text-center text-xs flex justify-center 
+              items-center col-start-1 col-end-2 cursor-pointer'
+              onClick={spinDice}
+            >
+              <div 
+                className='transition-transform duration-300'
+                ref={d20Ref}
+              >
+                <Image src='/images/d20-light.png' alt='d20' width={28} height={28} className='h-auto w-auto' /> 
+              </div>
+            </div>
+          )
+        }
         {
           tab !== 'player' &&
           (
@@ -313,69 +363,28 @@ export default function CreatureSelectForm({ creatures, tab }) {
               <input 
                 className="w-full row-start-1 row-end-2 col-start-2 col-end-3 border-0 rounded-lg pr-1 text-gray-800 
                 focus:ring-0 shadow-md focus:shadow-lg transition-shadow duration-300 text-sm
-                  bg-gray-100"
+                bg-gray-100"
                 type='number'
                 placeholder='0'
-                min={0}
+                min={-10}
                 value={hp}
                 onChange={(e) => setHp(e.target.value)}
+                onFocus={(e) => clearZero(e, hp, setHp)}
               />
               <input 
                 className="w-full row-start-2 row-end-3 col-start-2 col-end-3 border-0 rounded-lg pr-1 text-gray-800 
                 focus:ring-0 shadow-md focus:shadow-lg transition-shadow duration-300 text-sm
-                  bg-gray-100"
+                bg-gray-100"
                 type='number'
                 placeholder='0'
                 min={0}
                 value={ac}
-                onChange={(e) => setAc(e.target.value)}
+                onChange={(e) => handleChangeInput(e, ac, setAc, 3)}
+                onFocus={(e) => clearZero(e, ac, setAc)}
               />
             </>
           )
         }
-        {/* <Transition
-          className='w-full row-start-1 row-end-2 col-start-2 col-end-3'
-          show={tab != 'player'}
-          enter="transition-opacity duration-75 delay-400"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="transition-opacity duration-150"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-            <input 
-              className="w-full border-0 rounded-lg pr-1 text-gray-800 
-              focus:ring-0 shadow-md focus:shadow-lg transition-shadow duration-300 text-sm
-                bg-gray-100"
-              type='number'
-              placeholder='0'
-              min={0}
-              value={hp}
-              onChange={(e) => setHp(e.target.value)}
-            />
-        </Transition>
-
-        <Transition
-          className='w-full row-start-2 row-end-3 col-start-2 col-end-3'
-          show={tab != 'player'}
-          enter="transition-opacity duration-75 delay-400"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="transition-opacity duration-150"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <input 
-            className="w-full border-0 rounded-lg pr-1 text-gray-800 
-            focus:ring-0 shadow-md focus:shadow-lg transition-shadow duration-300 text-sm
-              bg-gray-100"
-            type='number'
-            placeholder='0'
-            min={0}
-            value={ac}
-            onChange={(e) => setAc(e.target.value)}
-          />
-        </Transition> */}
         
         <input 
           className={`w-full border-0 rounded-lg pr-1 text-gray-800 col-start-2 col-end-3
@@ -386,7 +395,8 @@ export default function CreatureSelectForm({ creatures, tab }) {
           min={-11}
           max={30}
           value={init}
-          onChange={(e) => setInit(e.target.value)}
+          onChange={(e) => handleChangeInput(e, init, setInit, 3)}
+          onFocus={(e) => clearZero(e, init, setInit)}
         />
         <input 
           className={`w-full border-0 rounded-lg pr-1 text-gray-800 col-start-2 col-end-3
@@ -397,10 +407,11 @@ export default function CreatureSelectForm({ creatures, tab }) {
           min={-10}
           max={10}
           value={bonus}
-          onChange={(e) => setBonus(e.target.value)}
+          onChange={(e) => handleChangeInput(e, bonus, setBonus, 3)}
+          onFocus={(e) => clearZero(e, bonus, setBonus)}
         />
-        <button className='bg-gray-100 text-gray-800 p-2 rounded-md w-full
-        font-semibold '>
+        <button className={`bg-gray-100 text-gray-800 p-2 rounded-md w-full
+        font-semibold ${tab == 'player' && 'col-start-2 col-end-3'}`}>
           Add
         </button>
       </div>
