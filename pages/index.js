@@ -7,6 +7,7 @@ import Header from '../components/Header'
 import Loader from '../components/Loader'
 import Main from '../components/Main'
 import MonsterManual from '../components/MonsterManual'
+import { Transition } from '@headlessui/react'
 
 export default function Home({ creatures }) {
   const [isLoading] = useRecoilState(loadingState)
@@ -40,11 +41,20 @@ export default function Home({ creatures }) {
       />
 
       {/* Monster Manual */}
-      {monsterManualOpen && 
+      <Transition
+        show={monsterManualOpen}
+        enter="transition-all duration-300"
+        enterFrom="opacity-0 ease-in scale-0"
+        enterTo="opacity-100 scale-100"
+        leave="transition-all ease-out duration-300"
+        leaveFrom="opacity-100 scale-100"
+        leaveTo="opacity-0 scale-0"
+        className='fixed w-screen height-minus-header mm-bg p-6 flex justify-center'
+      >
         <MonsterManual 
           creatures={creatures}
         />
-      }
+      </Transition>
 
       {/* Loading spinner */}
       {/* {
