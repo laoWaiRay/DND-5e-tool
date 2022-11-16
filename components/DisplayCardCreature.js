@@ -9,7 +9,7 @@ import { activeCreaturesState } from '../atoms/activeCreaturesAtom'
 import { useRecoilState } from 'recoil'
 import PopupDEX from './PopupDEX'
 
-export default function DisplayCardCreature({ creatureData, windowSize }) {
+export default function DisplayCardCreature({ creatureData, windowSize, ...rest }) {
   const [activeCreatures, setActiveCreatures] = useRecoilState(activeCreaturesState);
   const [activeStatuses, setActiveStatuses] = useState([]);
   const [overflowStatuses, setOverflowStatuses] = useState([]);
@@ -23,10 +23,6 @@ export default function DisplayCardCreature({ creatureData, windowSize }) {
   const cardRef = useRef(null);
   const elementRef = useRef(null)
   const nameRef = useRef(null)
-
-  useEffect(() => {
-    console.log(activeStatuses)
-  }, [activeStatuses])
 
   useEffect(() => {
     const elt = statusBarRef.current

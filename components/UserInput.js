@@ -2,11 +2,13 @@ import { Transition } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon, ChevronDoubleUpIcon } from '@heroicons/react/24/solid'
 import React, { useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil'
+import { activeCreaturesState } from '../atoms/activeCreaturesAtom'
 import { hiddenUserInputState } from '../atoms/hiddenUserInputAtom'
 import CreatureSelectForm from './CreatureSelectForm'
 
 export default function UserInput({ creatures }) {
   const [tab, setTab] = useState('player');
+  const [activeCreatures, setActiveCreatures] = useRecoilState(activeCreaturesState)
   const [isHidden, setIsHidden] = useRecoilState(hiddenUserInputState);
 
   useEffect(() => {
@@ -17,13 +19,6 @@ export default function UserInput({ creatures }) {
       window.scrollTo({ top: document.body.scrollHeight })
     }, 300);
   }, [isHidden, tab])
-
-  // const scrollToTop = () => {
-  //   const top = document.getElementById('topOfTheRound');
-  //   if (!top)
-  //     return
-  //   top.scrollIntoView({ block: 'start' })
-  // }
 
   return (
     <>
@@ -105,23 +100,6 @@ export default function UserInput({ creatures }) {
               <ChevronUpIcon className='w-6 h-6 text-gray-100 '/>
             </div>
           </Transition.Child>
-            
-          {/* <Transition.Child
-            enter="transition-all duration-300 delay-[500ms]"
-            enterFrom="opacity-0 translate-y-10"
-            enterTo="opacity-100 translate-y-0"
-            leave="transition-all duration-500"
-            leaveFrom="opacity-100 translate-y-0"
-            leaveTo="opacity-0 translate-y-10"
-          >
-            <div 
-              className='absolute right-8 bottom-2.5 border-[1px] border-gray-400 rounded-full p-1 
-              bg-transparent transition-all duration-150 ease-out hover:-translate-y-0.5 btn-shadow'
-              onClick={scrollToTop}
-            >
-              <ChevronDoubleUpIcon className='w-6 h-6 text-gray-400 bg-transparent' />
-            </div>
-          </Transition.Child> */}
         </Transition>
       </div>
     </>

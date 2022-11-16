@@ -5,7 +5,7 @@ import React, { Fragment, useState, useEffect, useRef } from 'react'
 import { useRecoilState } from 'recoil'
 import { activeCreaturesState } from '../atoms/activeCreaturesAtom'
 import chroma from "chroma-js"
-import NumericInput from 'react-numeric-input';
+import { loadingState } from '../atoms/loadingAtom'
 
 export default function CreatureSelectForm({ creatures, tab }) {
   const [selectedCreature, setSelectedCreature] = useState('')
@@ -16,13 +16,10 @@ export default function CreatureSelectForm({ creatures, tab }) {
   const [init, setInit] = useState('');
   const [bonus, setBonus] = useState('');
   const [isSpinning, setIsSpinning] = useState(false);
+  const [isLoading, setIsLoading] = useRecoilState(loadingState)
   const [activeCreatures, setActiveCreatures] = useRecoilState(activeCreaturesState);
   const [colors, setColors] = useState([])
   const d20Ref = useRef(null);
-
-  // useEffect(() => {
-  //   console.log(activeCreatures)
-  // }, [activeCreatures])
 
   useEffect(() => {
     const randColorsArray = [];
@@ -63,7 +60,7 @@ export default function CreatureSelectForm({ creatures, tab }) {
     setTimeout(() => {
       d20Ref.current.classList.remove('animate-spin-fast')
       setIsSpinning(false)
-    }, 1000)
+    }, 600)
     setInit(Math.floor(Math.random() * 20) + 1 + parseInt(bonus))
   }
 
@@ -123,6 +120,11 @@ export default function CreatureSelectForm({ creatures, tab }) {
     e.preventDefault()
     if (!selectedCreature)
       return
+    
+    if (isLoading) {
+      return
+    }
+
     const selectedCreatureData = {
       ...selectedCreature,
       id: Math.random(),
@@ -168,18 +170,14 @@ export default function CreatureSelectForm({ creatures, tab }) {
   }
 
   const handleChangeInput = (e, input, setInput, maxDigits) => {
-    console.log(e)
-
     if (e.target.value.length > maxDigits) {
       setInput(Math.floor(parseInt(e.target.value) / 10));
     } else if (!e.target.value) {
       setInput(e.nativeEvent.data);
     } else if (e.target.value[0] == 0) {
       if (e.nativeEvent.data == "-") {
-        console.log("lol");
         setInput(e.nativeEvent.data);
       } else {
-        console.log('lololol')
         setInput(e.target.value.slice(-1));
       }
     } else {
@@ -190,11 +188,14 @@ export default function CreatureSelectForm({ creatures, tab }) {
   const clearZero = (e, input, setInput) => {
     if (input == '0')
       setInput('')
+    // stopBodyScroll()
   }
 
   useEffect(() => {
     if (!selectedCreature)
       return;
+
+    setIsLoading(true)
     
     const fetchData = async () => {
       const res = await fetch(`https://www.dnd5eapi.co` + selectedCreature.url);
@@ -203,9 +204,16 @@ export default function CreatureSelectForm({ creatures, tab }) {
       setHp(json.hit_points)
       setAc(json.armor_class)
       setInit(0)
+      setIsLoading(false)
     }
 
-    fetchData()
+    try {
+      fetchData()
+    } catch (error) {
+      setIsLoading(false)
+      console.log(error)
+    }
+    
   }, [selectedCreature])
 
   useEffect(() => {
@@ -370,6 +378,7 @@ export default function CreatureSelectForm({ creatures, tab }) {
                 value={hp}
                 onChange={(e) => setHp(e.target.value)}
                 onFocus={(e) => clearZero(e, hp, setHp)}
+                
               />
               <input 
                 className="w-full row-start-2 row-end-3 col-start-2 col-end-3 border-0 rounded-lg pr-1 text-gray-800 
@@ -381,6 +390,7 @@ export default function CreatureSelectForm({ creatures, tab }) {
                 value={ac}
                 onChange={(e) => handleChangeInput(e, ac, setAc, 3)}
                 onFocus={(e) => clearZero(e, ac, setAc)}
+                onWheel={(e) => e.preventDefault()}
               />
             </>
           )
