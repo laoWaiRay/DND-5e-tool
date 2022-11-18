@@ -8,9 +8,13 @@ import StatusIcon from './StatusIcon'
 import { activeCreaturesState } from '../atoms/activeCreaturesAtom'
 import { useRecoilState } from 'recoil'
 import PopupDEX from './PopupDEX'
+import { selectedCreatureState } from '../atoms/selectedCreatureAtom'
+import { monsterManualState } from '../atoms/monsterManualAtom'
 
 export default function DisplayCardCreature({ creatureData, windowSize, ...rest }) {
   const [activeCreatures, setActiveCreatures] = useRecoilState(activeCreaturesState);
+  const [selectedCreature, setSelectedCreature] = useRecoilState(selectedCreatureState)
+  const [isMonsterManualOpen, setIsMonsterManualOpen] = useRecoilState(monsterManualState)
   const [activeStatuses, setActiveStatuses] = useState([]);
   const [overflowStatuses, setOverflowStatuses] = useState([]);
   const [isHoverEllipses, setIsHoverEllipses] = useState(false);
@@ -106,6 +110,11 @@ export default function DisplayCardCreature({ creatureData, windowSize, ...rest 
     newActiveCreatures = newActiveCreatures.filter((creature) => creature.id != creatureData.id)
     setActiveCreatures(newActiveCreatures)
   }
+
+  const openMonsterManual = () => {
+    setIsMonsterManualOpen(true);
+    setSelectedCreature(creatureData)
+  }
  
   return (
     <div 
@@ -137,6 +146,7 @@ export default function DisplayCardCreature({ creatureData, windowSize, ...rest 
             <span 
               className={`${creatureData.pc && 'text-amber-400'}`}
               ref={nameRef}
+              onClick={openMonsterManual}
             >
               {creatureData.name}
             </span>

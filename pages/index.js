@@ -57,13 +57,15 @@ export default function Home({ creatures }) {
       {/* Monster Manual */}
       <Transition
         show={monsterManualOpen}
+        appear={true}
+        unmount={false}
         enter="transition-all duration-300"
         enterFrom="opacity-0 ease-in scale-0"
         enterTo="opacity-100 scale-100"
         leave="transition-all ease-out duration-300"
         leaveFrom="opacity-100 scale-100"
         leaveTo="opacity-0 scale-0"
-        className='fixed w-screen height-minus-header mm-bg p-6 flex justify-center'
+        className='fixed w-screen height-minus-header mm-bg sm:px-6 pt-4 pb-6 px-2 flex justify-center'
       >
         <MonsterManual 
           creatures={creatures}

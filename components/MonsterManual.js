@@ -4,10 +4,13 @@ import React, { Fragment, useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useRecoilState } from 'recoil'
 import { loadingState } from '../atoms/loadingAtom'
+import { img_data } from '../image_urls'
+import { selectedCreatureState } from '../atoms/selectedCreatureAtom'
 
 export default function MonsterManual({ creatures }) {
   const [isLoading, setIsLoading] = useRecoilState(loadingState)
-  const [selectedCreature, setSelectedCreature] = useState('')
+  const [selectedCreature, setSelectedCreature] = useRecoilState(selectedCreatureState)
+  const [imgUrl, setImgUrl] = useState('')
   const [data, setData] = useState(null)
   const [query, setQuery] = useState('')
 
@@ -42,6 +45,28 @@ export default function MonsterManual({ creatures }) {
       console.log(error)
     }
     
+  }, [selectedCreature, setIsLoading])
+
+  useEffect(() => {
+    if (!selectedCreature)
+    return;
+
+    setIsLoading(true)
+    
+    const fetchData = async () => {
+      const url = img_data.find((elt) => elt.name == selectedCreature.name)?.url
+      if (url)
+        setImgUrl(url)
+      else
+        setImgUrl('')
+    }
+
+    try {
+      fetchData()
+    } catch (error) {
+      setIsLoading(false)
+      console.log(error)
+    }
   }, [selectedCreature, setIsLoading])
 
   const capitalize = (string) => {
@@ -79,8 +104,18 @@ export default function MonsterManual({ creatures }) {
           <div>
             <span className='font-semibold text-red-800'>Damage Immunities </span>
             {
-              immunities.map((immunity) => immunity[0].toUpperCase() + immunity.slice(1))
-                .join(', ')
+              immunities.map((immunity) => {
+                if (immunity.indexOf(',') != -1) {
+                  return immunity.split(', ').map((str) => {
+                      if (str[0] == 'a')
+                        return str.slice(0, 4) + str[4].toUpperCase() + str.slice(5)
+                      else
+                        return str[0].toUpperCase() + str.slice(1)
+                    }).join(', ')
+                } else {
+                  return immunity[0].toUpperCase() + immunity.slice(1)
+                }
+              }).join(', ')
             }
           </div>
         }
@@ -88,9 +123,18 @@ export default function MonsterManual({ creatures }) {
           <div>
             <span className='font-semibold text-red-800'>Damage Resistances </span>
             {
-              resistances.map((resistance) => (
-                <span key={resistance}>{resistance}</span>
-              ))
+              resistances.map((resistance) => {
+                if (resistance.indexOf(',') != -1) {
+                  return resistance.split(', ').map((str) => {
+                      if (str[0] == 'a')
+                        return str.slice(0, 4) + str[4].toUpperCase() + str.slice(5)
+                      else
+                        return str[0].toUpperCase() + str.slice(1)
+                    }).join(', ')
+                } else {
+                  return resistance[0].toUpperCase() + resistance.slice(1)
+                }
+              }).join(', ')
             }
           </div>
         }
@@ -123,12 +167,23 @@ export default function MonsterManual({ creatures }) {
     )
   }
 
+  const challenge_rating_to_fraction = (num) => {
+    if (num == 0.125)
+      return '1/8'
+    else if (num == 0.25)
+      return '1/4'
+    else if (num == 0.5)
+      return '1/2'
+    else
+      return num
+  }
+
   return (
-    <div className='w-full h-full relative max-w-4xl -mt-2'>
-      <div className='max-w-sm mx-auto'>
+    <div className='w-full h-full relative max-w-3xl'>
+      <div className='max-w-xs mx-auto z-50'>
         <Combobox value={selectedCreature} onChange={setSelectedCreature}>
           <div className="relative">
-            <div className="relative w-full cursor-default rounded-lg bg-white text-left">
+            <div className="relative w-full cursor-default rounded-lg bg-white text-left mb-2">
               <Combobox.Input
                 className="w-full border-0 rounded-lg py-2 pl-3 pr-10 leading-5 text-gray-800 
                 shadow-md focus:ring-0 focus:shadow-lg bg-gray-100
@@ -157,9 +212,9 @@ export default function MonsterManual({ creatures }) {
               afterLeave={() => setQuery('')}
             >
               <Combobox.Options 
-                className="absolute mt-1 max-h-44 w-full overflow-auto rounded-md bg-gray-50 py-1 
+                className="absolute mt-0 max-h-44 w-full overflow-auto rounded-md bg-gray-50 py-1 
                 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none scrollbar-thin 
-                scrollbar-thumb-gray-400 scrollbar-thumb-rounded-md"
+                scrollbar-thumb-gray-400 scrollbar-thumb-rounded-md z-50"
               >
                 {filteredCreatures.length === 0 && query !== '' ? (
                   <div className="relative cursor-default select-none py-0.5 px-3 text-gray-700">
@@ -213,94 +268,136 @@ export default function MonsterManual({ creatures }) {
       />
       {
         data && (
-          <section className='p-2 my-3 rounded-sm h-[94%] bg-paper shadow-lg shadow-black text-sm space-y-2 leading-[21px]'>
-            <div>
-              <h1 className='text-2xl font-bold text-red-800 font-serif'>{data.name}</h1>
-              <h3 className='italic'>{`${data.size} ${capitalize(data.type)}, ${capitalize(data.alignment)}`}</h3>
-            </div>
-            <div className='flex flex-col border-y-2 border-red-900 py-2'>
-              <span>
-                <span className='font-semibold text-red-800'>Armor Class</span> 
-                {' '}{data.armor_class}
-              </span>
-              <span>
-                <span className='font-semibold text-red-800'>Hit Points</span> 
-                {' '}{data.hit_points}
-              </span>
-              <span>
-                <span className='font-semibold text-red-800'>Speed:</span>
-                {' '}{data.speed.walk}{data.speed?.swim && ', swim ' + data.speed.swim}{data.speed?.fly && ', fly ' + data.speed.fly}
-              </span>
-            </div>
-            {/* Attributes */}
-            <div className='grid grid-cols-3 grid-rows-2'>
-              <div className='flex flex-col justify-center items-center'>
-                <span className='font-semibold text-red-800'>STR</span>
-                <span>{data.strength} &nbsp;(+3)</span>
+          <section className='p-4 my-3 rounded-sm h-[94%] bg-paper shadow-lg shadow-black text-sm space-y-2 leading-[21px] overflow-auto'>
+            <div className={`${imgUrl && 'grid md:grid-cols-2 md:gap-x-4'}`}>
+                <div className='space-y-2'>
+                  <div>
+                    <h1 className='text-2xl font-bold text-red-800 font-serif'>{data.name}</h1>
+                    <h3 className='italic'>{`${data.size} ${capitalize(data.type)}, ${capitalize(data.alignment)}`}</h3>
+                  </div>
+                  <div className='flex flex-col border-y-2 border-red-900 py-2'>
+                    <span>
+                      <span className='font-semibold text-red-800'>Armor Class</span> 
+                      {' '}{data.armor_class}
+                    </span>
+                    <span>
+                      <span className='font-semibold text-red-800'>Hit Points</span> 
+                      {' '}{data.hit_points}
+                    </span>
+                    <span>
+                      <span className='font-semibold text-red-800'>Speed:</span>
+                      {' '}{data.speed.walk}{data.speed?.swim && ', swim ' + data.speed.swim}{data.speed?.fly && ', fly ' + data.speed.fly}
+                    </span>
+                  </div>
+
+                {/* Attributes */}
+                <div className='grid grid-cols-3 grid-rows-2 sm:grid-rows-1 sm:grid-cols-6'>
+                  <div className='flex flex-col justify-start items-center'>
+                    <span className='font-semibold text-red-800'>STR</span>
+                    <span>{data.strength} (+3)</span>
+                  </div>
+                  <div className='flex flex-col justify-center items-center'>
+                    <span className='font-semibold text-red-800'>DEX</span>
+                    <span>{data.dexterity} (+3)</span>
+                  </div>
+                  <div className='flex flex-col justify-center items-center'>
+                    <span className='font-semibold text-red-800'>CON</span>
+                    <span>{data.constitution} (+3)</span>
+                  </div>
+                  <div className='flex flex-col justify-center items-center'>
+                    <span className='font-semibold text-red-800'>INT</span>
+                    <span>{data.intelligence} (+3)</span>
+                  </div>
+                  <div className='flex flex-col justify-center items-center'>
+                    <span className='font-semibold text-red-800'>WIS</span>
+                    <span>{data.wisdom} (+3)</span>
+                  </div>
+                  <div className='flex flex-col justify-center items-center'>
+                    <span className='font-semibold text-red-800'>CHA</span>
+                    <span>{data.charisma} (+3)</span>
+                  </div>
+                </div>
+
+                <div className='flex flex-col border-y-2 border-red-900 py-2'>
+                  <div>
+                    <span className='font-semibold text-red-800'>Saving Throws </span>
+                    {
+                      get_proficiencies_saves(data.proficiencies)
+                    }
+                  </div>
+                  <div>
+                    <span className='font-semibold text-red-800'>Skills </span>
+                    {
+                      get_proficiencies_skills(data.proficiencies)
+                    }
+                  </div>
+                  {
+                    get_immunities_resistances_vulnerabilities(data.damage_immunities, 
+                      data.damage_resistances, data.damage_vulnerabilities)
+                  }
+                  <div>
+                    <span className='font-semibold text-red-800'>Senses </span>
+                    {
+                      get_senses(data.senses)
+                    }
+                  </div>
+                  <div>
+                    <span className='font-semibold text-red-800'>Languages </span>
+                    {
+                      data.languages
+                    }
+                  </div>
+                  <div>
+                    <span className='font-semibold text-red-800'>Challenge {challenge_rating_to_fraction(data.challenge_rating)}</span> ({data.xp} XP)
+                  </div>
+                </div>
               </div>
-              <div className='flex flex-col justify-center items-center'>
-                <span className='font-semibold text-red-800'>DEX</span>
-                <span>{data.dexterity} &nbsp;(+3)</span>
-              </div>
-              <div className='flex flex-col justify-center items-center'>
-                <span className='font-semibold text-red-800'>CON</span>
-                <span>{data.constitution} &nbsp;(+3)</span>
-              </div>
-              <div className='flex flex-col justify-center items-center'>
-                <span className='font-semibold text-red-800'>INT</span>
-                <span>{data.intelligence} &nbsp;(+3)</span>
-              </div>
-              <div className='flex flex-col justify-center items-center'>
-                <span className='font-semibold text-red-800'>WIS</span>
-                <span>{data.wisdom} &nbsp;(+3)</span>
-              </div>
-              <div className='flex flex-col justify-center items-center'>
-                <span className='font-semibold text-red-800'>CHA</span>
-                <span>{data.charisma} &nbsp;(+3)</span>
+
+              <div className='flex flex-1 justify-center items-center relative rounded-md'>
+                {imgUrl && (
+                  <Image className='object-contain' src={imgUrl} fill alt={selectedCreature.name}/>
+                )}
               </div>
             </div>
 
-            <div className='flex flex-col border-y-2 border-red-900 py-2'>
-              <div>
-                <span className='font-semibold text-red-800'>Saving Throws </span>
-                {
-                  get_proficiencies_saves(data.proficiencies)
-                }
-              </div>
-              <div>
-                <span className='font-semibold text-red-800'>Skills </span>
-                {
-                  get_proficiencies_skills(data.proficiencies)
-                }
-              </div>
-              {
-                get_immunities_resistances_vulnerabilities(data.damage_immunities, 
-                  data.damage_resistances, data.damage_vulnerabilities)
-              }
-              <div>
-                <span className='font-semibold text-red-800'>Senses </span>
-                {
-                  get_senses(data.senses)
-                }
-              </div>
-              <div>
-                <span className='font-semibold text-red-800'>Languages </span>
-                {
-                  data.languages
-                }
-              </div>
-              <div>
-                <span className='font-semibold text-red-800'>Challenge {data.challenge_rating}</span> ({data.xp} XP)
-              </div>
-            </div>
-            {data.special_abilities.length > 0 && (
-              <div>
+            {data.special_abilities?.length > 0 ? (
+              <div className='pt-2'>
                 {data.special_abilities.map((ability) => (
-                  <div key={ability.name}>
-                    <span className='font-semibold italic'>{ability.name} ({ability.usage.times} {ability.usage.type}).</span>
+                  <div key={ability.name} className='pb-1'>
+                    <span className='font-semibold italic'>{ability.name}{ability.usage && ` (${ability.usage?.times} ${ability.usage?.type})`}.</span>
                     <span> {ability.desc} </span>
                   </div>
                 ))}
+              </div>
+            ) :
+            <div className='pt-2'></div>
+            }
+
+            {data.actions.length > 0 && (
+              <div>
+                <h1 className='text-red-900 text-2xl border-b border-red-900 mb-2 font-light'>Actions</h1>
+                {
+                  data.actions.map((action) => (
+                    <div key={action.name} className='py-1'>
+                      <span className='font-semibold italic'>{action.name}.</span>
+                      <span>{' ' + action.desc}</span>
+                    </div>
+                  ))
+                }
+              </div>
+            )}
+
+            {data.legendary_actions.length > 0 && (
+              <div>
+                <h1 className='text-red-900 text-2xl border-b border-red-900 mb-2 font-light'>Legendary Actions</h1>
+                {
+                  data.legendary_actions.map((action) => (
+                    <div key={action.name} className='py-1'>
+                      <span className='font-semibold italic'>{action.name}.</span>
+                      <span>{' ' + action.desc}</span>
+                    </div>
+                  ))
+                }
               </div>
             )}
           </section>
