@@ -214,7 +214,7 @@ export default function CreatureSelectForm({ creatures, tab }) {
       console.log(error)
     }
     
-  }, [selectedCreature])
+  }, [selectedCreature, setIsLoading])
 
   useEffect(() => {
     setSelectedCreature('')

@@ -21,6 +21,20 @@ export default function Home({ creatures }) {
     reff.addEventListener('wheel', wheelHandler)
     return () => reff.removeEventListener('wheel', wheelHandler)
   }, [ref])
+
+  useEffect(() => {
+    if (monsterManualOpen)
+    {
+      document.body.style.position = 'fixed'
+      document.body.style.width = '100vw'
+    }
+    else
+    {
+      document.body.style.position = ''
+      document.body.style.width = ''
+    }
+      
+  }, [monsterManualOpen])
   
   return (
     // Overflow hidden is amazing !!!
