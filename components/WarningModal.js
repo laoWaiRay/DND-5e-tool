@@ -1,7 +1,6 @@
 import { Popover } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import React from 'react'
-import { Draggable } from 'react-beautiful-dnd';
 
 export default function WarningModal({ handleDelete, elementRef }) {
   return (

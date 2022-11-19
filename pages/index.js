@@ -13,12 +13,15 @@ import Spellbook from '../components/Spellbook'
 import { conditionsState } from '../atoms/conditionsAtom'
 import Conditions from '../components/Conditions'
 import { exhaustionDef } from '../exhaustionDef'
+import About from '../components/About'
+import { aboutState } from '../atoms/aboutAtom'
 
 export default function Home({ creatures, spells, conditions }) {
   const [isLoading] = useRecoilState(loadingState)
   const [monsterManualOpen, setMonsterManualOpen] = useRecoilState(monsterManualState)
   const [spellbookOpen, setSpellbookOpen] = useRecoilState(spellbookState)
   const [conditionsOpen, setConditionsOpen] = useRecoilState(conditionsState)
+  const [aboutOpen, setAboutOpen] = useRecoilState(aboutState)
   // This stuff is to prevent input scrolling from scrolling the body
   const ref = useRef(null)
 
@@ -108,6 +111,20 @@ export default function Home({ creatures, spells, conditions }) {
         <Conditions 
           conditions={conditions}
         />
+      </Transition>
+
+      {/* About */}
+      <Transition
+        show={aboutOpen}
+        enter="transition-all duration-300"
+        enterFrom="ease-in -translate-y-full"
+        enterTo="translate-y-0"
+        leave="transition-all ease-out duration-300"
+        leaveFrom="translate-y-0"
+        leaveTo="-translate-y-full"
+        className='fixed w-screen height-minus-header mm-bg sm:px-6 pt-4 pb-6 px-2 flex justify-center'
+      >
+        <About />
       </Transition>
 
       {/* Loading spinner */}

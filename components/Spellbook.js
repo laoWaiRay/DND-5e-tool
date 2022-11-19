@@ -4,6 +4,10 @@ import React, { Fragment, useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useRecoilState } from 'recoil'
 import { loadingState } from '../atoms/loadingAtom'
+import ReturnButton from './ReturnButton'
+import { monsterManualState } from '../atoms/monsterManualAtom'
+import { spellbookState } from '../atoms/spellbookAtom'
+import { conditionsState } from '../atoms/conditionsAtom'
 
 export default function Spellbook({ spells }) {
   const [isLoading, setIsLoading] = useRecoilState(loadingState)
@@ -195,6 +199,9 @@ export default function Spellbook({ spells }) {
           </section>
         )
       }
+      <div className='absolute right-3 top-0.5 z-50 text-gray-300 cursor-pointer hover:text-purple-600 transition-all duration-150 ease'>
+        <ReturnButton />
+      </div>
     </div>
   )
 }

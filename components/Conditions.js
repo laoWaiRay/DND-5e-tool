@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useRecoilState } from 'recoil'
 import { scrollToConditionState } from '../atoms/scrollToConditionAtom'
+import ReturnButton from './ReturnButton'
 
 export default function Conditions({ conditions }) {
   const [scrollToCondition, setScrollToCondition] = useRecoilState(scrollToConditionState)
@@ -17,8 +18,9 @@ export default function Conditions({ conditions }) {
 
   return (
     <div className='w-full h-full relative max-w-3xl'>
-      <section className='text-gray-900 p-4 my-3 rounded-sm max-h-[95%] bg-paper shadow-lg shadow-black text-sm space-y-2 leading-6 overflow-auto'>
-        <h1 className='text-2xl font-bold font-serif mb-2'>Conditions</h1>
+      <section className='text-gray-900 p-4 my-3 mt-10 rounded-sm max-h-[95%] bg-paper shadow-lg shadow-black 
+      text-sm space-y-2 leading-6 overflow-auto min-[950px]:mt-3'>
+        <h1 className='text-2xl font-bold font-serif -mb-3'>Conditions</h1>
         {
           conditions.map((condition, index) => (
             <div key={index}>
@@ -69,10 +71,15 @@ export default function Conditions({ conditions }) {
             </div>
           ))
         }
-        <div className='h-[420px]'></div>
+        <div className='h-[410px]'></div>
       </section>
         
-      
+      <div 
+        className='absolute right-3 -top-3 z-50 text-gray-300 cursor-pointer hover:text-purple-600 
+        transition-all duration-150 ease min-[950px]:-right-20 min-[950px]:top-1'
+      >
+        <ReturnButton />
+      </div>
     </div>
   )
 }

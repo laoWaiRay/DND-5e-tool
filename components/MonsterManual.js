@@ -6,6 +6,7 @@ import { useRecoilState } from 'recoil'
 import { loadingState } from '../atoms/loadingAtom'
 import { img_data } from '../image_urls'
 import { selectedCreatureState } from '../atoms/selectedCreatureAtom'
+import ReturnButton from './ReturnButton'
 
 export default function MonsterManual({ creatures }) {
   const [isLoading, setIsLoading] = useRecoilState(loadingState)
@@ -406,6 +407,9 @@ export default function MonsterManual({ creatures }) {
         )
       }
       
+      <div className='absolute right-3 top-0.5 z-50 text-gray-300 cursor-pointer hover:text-purple-600 transition-all duration-150 ease'>
+        <ReturnButton />
+      </div>
     </div>
   )
 }

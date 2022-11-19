@@ -1,7 +1,7 @@
 import { Transition, Popover } from '@headlessui/react';
 import Image from 'next/image'
 import React, { useRef, useState } from 'react'
-import { MagnifyingGlassCircleIcon, XCircleIcon } from '@heroicons/react/24/outline'
+import { XCircleIcon } from '@heroicons/react/24/outline'
 import { scrollToConditionState } from '../atoms/scrollToConditionAtom';
 import { useRecoilState } from 'recoil';
 import { conditionsState } from '../atoms/conditionsAtom';
@@ -95,15 +95,7 @@ export default function StatusIcon({ stat, activeStatuses, overflowStatuses, set
                       className='w-6 h-6 text-red-600 pointer-events-none'
                     />
                   </div>
-                  {/* <div 
-                    className='absolute -bottom-2 -right-4 bg-gray-900 rounded-full cursor-pointer 
-                    pointer-events-auto'
-                    onClick={(e) => openConditions(e, close)}
-                  >
-                    <MagnifyingGlassCircleIcon
-                      className='w-6 h-6 text-gray-300 pointer-events-none'
-                    />
-                  </div> */}
+            
                   <span 
                     className='whitespace-nowrap flex-1 cursor-pointer'
                     onClick={(e) => openConditions(e, close)}

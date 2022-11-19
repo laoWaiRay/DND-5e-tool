@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil'
+import { aboutState } from '../atoms/aboutAtom'
 import { conditionsState } from '../atoms/conditionsAtom'
 import { monsterManualState } from '../atoms/monsterManualAtom'
 import { scrollToConditionState } from '../atoms/scrollToConditionAtom'
@@ -11,12 +12,14 @@ export default function Header() {
   const [spellbookOpen, setSpellbookOpen] = useRecoilState(spellbookState)
   const [conditionsOpen, setConditionsOpen] = useRecoilState(conditionsState)
   const [scrollToCondition, setScrollToCondition] = useRecoilState(scrollToConditionState)
+  const [aboutOpen, setAboutOpen] = useRecoilState(aboutState)
   const [transitioning, setTransitioning] = useState(false);
 
   const closeAllPages = () => {
     setMonsterManualOpen(false)
     setSpellbookOpen(false)
     setConditionsOpen(false)
+    setAboutOpen(false)
     setScrollToCondition('')
   }
 
@@ -55,32 +58,32 @@ export default function Header() {
         <nav className='flex text-gray-400 space-x-4 flex-1 ml-4'>
           <div 
             className={`cursor-pointer ${!transitioning && !monsterManualOpen && !spellbookOpen 
-            && !conditionsOpen && 'text-gray-100'}`}
+            && !conditionsOpen && !aboutOpen && 'text-gray-100'}`}
             onClick={() => { closeAllPages() }}
           >
             Battle
           </div>
           <div 
-            className={`cursor-pointer ${monsterManualOpen && 'text-gray-100'}`}
-            onClick={() => { openPage([spellbookOpen, conditionsOpen], setMonsterManualOpen) }}
+            className={`whitespace-nowrap cursor-pointer ${monsterManualOpen && 'text-gray-100'}`}
+            onClick={() => { openPage([spellbookOpen, conditionsOpen, aboutOpen], setMonsterManualOpen) }}
           >
             Monster Manual
           </div>
           <div
             className={`cursor-pointer ${spellbookOpen && 'text-gray-100'}`}
-            onClick={() => { openPage([monsterManualOpen, conditionsOpen], setSpellbookOpen) }}
+            onClick={() => { openPage([monsterManualOpen, conditionsOpen, aboutOpen], setSpellbookOpen) }}
           >
             Spells
           </div>
           <div
             className={`cursor-pointer ${conditionsOpen && 'text-gray-100'}`}
-            onClick={() => { openPage([monsterManualOpen, spellbookOpen], setConditionsOpen) }}
+            onClick={() => { openPage([monsterManualOpen, spellbookOpen, aboutOpen], setConditionsOpen) }}
           >
             Conditions
           </div>
           <div
-            className={`cursor-pointer`}
-            onClick={() => {}}
+            className={`cursor-pointer ${aboutOpen && 'text-gray-100'}`}
+            onClick={() => { openPage([monsterManualOpen, spellbookOpen, conditionsOpen], setAboutOpen) }}
           >
             About
           </div>

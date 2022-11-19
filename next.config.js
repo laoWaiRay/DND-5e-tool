@@ -4,7 +4,7 @@ const nextConfig = {
   swcMinify: true,
   images: {
     domains: ['media-waterdeep.cursecdn.com']
-  }
+  },
   // remotePatterns: [
   //   {
   //     protocol: 'https',
