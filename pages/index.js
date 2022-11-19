@@ -10,11 +10,15 @@ import MonsterManual from '../components/MonsterManual'
 import { Transition } from '@headlessui/react'
 import { spellbookState } from '../atoms/spellbookAtom'
 import Spellbook from '../components/Spellbook'
+import { conditionsState } from '../atoms/conditionsAtom'
+import Conditions from '../components/Conditions'
+import { exhaustionDef } from '../exhaustionDef'
 
-export default function Home({ creatures, spells }) {
+export default function Home({ creatures, spells, conditions }) {
   const [isLoading] = useRecoilState(loadingState)
   const [monsterManualOpen, setMonsterManualOpen] = useRecoilState(monsterManualState)
   const [spellbookOpen, setSpellbookOpen] = useRecoilState(spellbookState)
+  const [conditionsOpen, setConditionsOpen] = useRecoilState(conditionsState)
   // This stuff is to prevent input scrolling from scrolling the body
   const ref = useRef(null)
 
@@ -60,7 +64,6 @@ export default function Home({ creatures, spells }) {
       {/* Monster Manual */}
       <Transition
         show={monsterManualOpen}
-        appear={true}
         unmount={false}
         enter={`transition-all duration-300`}
         enterFrom="opacity-0 ease-in scale-0"
@@ -78,8 +81,6 @@ export default function Home({ creatures, spells }) {
        {/* Spellbook */}
        <Transition
         show={spellbookOpen}
-        appear={true}
-        unmount={false}
         enter={`transition-all duration-300`}
         enterFrom="opacity-0 ease-in scale-0"
         enterTo="opacity-100 scale-100"
@@ -90,6 +91,22 @@ export default function Home({ creatures, spells }) {
       >
         <Spellbook
           spells={spells}
+        />
+      </Transition>
+
+      {/* Feats */}
+      <Transition
+        show={conditionsOpen}
+        enter={`transition-all duration-300`}
+        enterFrom="opacity-0 ease-in scale-0"
+        enterTo="opacity-100 scale-100"
+        leave="transition-all ease-out duration-300"
+        leaveFrom="opacity-100 scale-100"
+        leaveTo="opacity-0 scale-0"
+        className='fixed w-screen height-minus-header mm-bg sm:px-6 pt-4 pb-6 px-2 flex justify-center'
+      >
+        <Conditions 
+          conditions={conditions}
         />
       </Transition>
 
@@ -111,10 +128,24 @@ export async function getServerSideProps() {
   json = await res.json();
   const spells = json.results;
 
+  res = await fetch('https://api.open5e.com/conditions/');
+  json = await res.json();
+  let conditions = json.results;
+  const elt = conditions.find((condition) => condition.name == 'Exhaustion');
+  const index = conditions.findIndex((elt) => elt.name == 'Exhaustion');
+  const newElt = {...elt}
+  newElt.desc = exhaustionDef
+  newElt.headers = ['Level', 'Effect']
+  newElt.rows = ['Disadvantage on Ability Checks', 'Speed halved', 
+  'Disadvantage on Attack rolls and Saving Throws', 'Hit point maximum halved',
+  'Speed reduced to 0', 'Death']
+  conditions.splice(index, 1, newElt)
+
   return {
     props: {
       creatures,
-      spells
+      spells,
+      conditions
     },
   }
 }

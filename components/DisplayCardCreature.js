@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { EllipsisHorizontalCircleIcon, ChevronLeftIcon, XMarkIcon } from '@heroicons/react/24/solid'
+import { EllipsisHorizontalCircleIcon, ChevronLeftIcon, XMarkIcon, MagnifyingGlassCircleIcon } from '@heroicons/react/24/solid'
 import PopupStatus from './PopupStatus'
 import PopupAc from './PopupAc'
 import PopupHp from './PopupHp'

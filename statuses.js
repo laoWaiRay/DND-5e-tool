@@ -1,7 +1,7 @@
 const statuses = [
   {
     id: '1',
-    name: 'Bleeding Out',
+    name: 'Bleeding',
     url: '/images/conditions/Bleeding Out.png'
   },
   {
@@ -16,7 +16,7 @@ const statuses = [
   },
   {
     id: '4',
-    name: 'Concentration',
+    name: 'Concentrating',
     url: '/images/conditions/Concentration.png'
   },
   {

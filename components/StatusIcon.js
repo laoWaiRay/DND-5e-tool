@@ -1,9 +1,14 @@
 import { Transition, Popover } from '@headlessui/react';
 import Image from 'next/image'
 import React, { useRef, useState } from 'react'
-import { XCircleIcon } from '@heroicons/react/24/outline'
+import { MagnifyingGlassCircleIcon, XCircleIcon } from '@heroicons/react/24/outline'
+import { scrollToConditionState } from '../atoms/scrollToConditionAtom';
+import { useRecoilState } from 'recoil';
+import { conditionsState } from '../atoms/conditionsAtom';
 
 export default function StatusIcon({ stat, activeStatuses, overflowStatuses, setActiveStatuses, setOverflowStatuses }) {
+  const [scrollToCondition, setScrollToCondition] = useRecoilState(scrollToConditionState)
+  const [conditionsOpen, setConditionsOpen] = useRecoilState(conditionsState)
   const [isHovering, setIsHovering] = useState(false);
   const ref = useRef(null)
 
@@ -26,14 +31,12 @@ export default function StatusIcon({ stat, activeStatuses, overflowStatuses, set
     setOverflowStatuses(newOverflowArray)
     setIsHovering(false)
     close(ref)
-    // setActiveStatuses(prev => {
-    //   const id = e.target.dataset.id;
-    //   let newStatusesArray = [...prev];
-    //   newStatusesArray = newStatusesArray.filter((condition) => condition.id != id)
-    //   setIsHovering(false)
-    //   close(ref)
-    //   return newStatusesArray
-    // });
+  }
+
+  const openConditions = (e, close) => {
+    setScrollToCondition(stat.name)
+    setConditionsOpen(true)
+    close(ref)
   }
 
   return (
@@ -80,7 +83,7 @@ export default function StatusIcon({ stat, activeStatuses, overflowStatuses, set
             >
               <Popover.Panel className="absolute top-[33px] left-1/2">
                 <div 
-                  className='absolute p-2 w-fit bg-gray-900 border border-gray-400 rounded-md pointer-events-none 
+                  className='absolute p-2 w-fit bg-gray-900 border border-gray-400 rounded-md 
                   z-50 -translate-x-1/2'
                 >
                   <div 
@@ -92,7 +95,21 @@ export default function StatusIcon({ stat, activeStatuses, overflowStatuses, set
                       className='w-6 h-6 text-red-600 pointer-events-none'
                     />
                   </div>
-                  <span className='whitespace-nowrap flex-1'>{stat.name}</span>
+                  {/* <div 
+                    className='absolute -bottom-2 -right-4 bg-gray-900 rounded-full cursor-pointer 
+                    pointer-events-auto'
+                    onClick={(e) => openConditions(e, close)}
+                  >
+                    <MagnifyingGlassCircleIcon
+                      className='w-6 h-6 text-gray-300 pointer-events-none'
+                    />
+                  </div> */}
+                  <span 
+                    className='whitespace-nowrap flex-1 cursor-pointer'
+                    onClick={(e) => openConditions(e, close)}
+                  >
+                    {stat.name}
+                  </span>
                 </div>
               </Popover.Panel>
             </Transition>    

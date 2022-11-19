@@ -55,10 +55,10 @@ export default function Spellbook({ spells }) {
 
   return (
     <div className='w-full h-full relative max-w-3xl'>
-      <div className='max-w-xs mx-auto z-50'>
+      <div className='max-w-xs mx-auto z-50 mb-5'>
         <Combobox value={selectedSpell} onChange={setSelectedSpell}>
           <div className="relative">
-            <div className="relative w-full cursor-default rounded-lg bg-white text-left mb-2">
+            <div className="relative w-full cursor-default rounded-lg bg-white text-left my-2">
               <Combobox.Input
                 className="w-full border-0 rounded-lg py-2 pl-3 pr-10 leading-5 text-gray-800 
                 shadow-md focus:ring-0 focus:shadow-lg bg-gray-100
@@ -66,7 +66,7 @@ export default function Spellbook({ spells }) {
                 displayValue={(person) => person.name}
                 onChange={(event) => setQuery(event.target.value)}
                 spellCheck='false'
-                placeholder='Search for a spell...'
+                placeholder='Search spells...'
               />
               <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
                 <ChevronUpDownIcon
@@ -134,15 +134,15 @@ export default function Spellbook({ spells }) {
         </Combobox>
       </div>
       <Image 
-        className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-50 -z-10 max-w-md scale-x-110 scale-y-105' 
-        src='/magic_circle.png' 
+        className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-50 -z-10 scale-x-110 scale-y-105 w-[400px]' 
+        src='/tree.png' 
         alt='crossed swords' 
         height={700} 
         width={700}
       />
      {
         data && (
-          <section className='p-4 my-3 rounded-sm max-h-[94%] bg-paper shadow-lg shadow-black text-sm space-y-2 leading-[21px] overflow-auto'>
+          <section className='p-4 my-3 rounded-sm max-h-[90%] bg-paper shadow-lg shadow-black text-sm space-y-2 leading-[21px] overflow-auto'>
             <div>
               <h1 className='text-xl font-bold text-red-800 font-serif'>{data.name}</h1>
               <h2 className='italic'>{data.level > 0 ? `${appendText(data.level)}-level` : 'cantrip'} {data.school.index}{data.ritual && ' (ritual)'}</h2>

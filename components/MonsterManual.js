@@ -31,7 +31,9 @@ export default function MonsterManual({ creatures }) {
     setIsLoading(true)
     
     const fetchData = async () => {
-      const res = await fetch(`https://www.dnd5eapi.co` + selectedCreature.url);
+      if (!selectedCreature.url)
+        return;
+      const res = await fetch(`https://www.dnd5eapi.co` + selectedCreature?.url);
       const json = await res.json()
       setData(json)
       setIsLoading(false)
@@ -180,7 +182,7 @@ export default function MonsterManual({ creatures }) {
 
   return (
     <div className='w-full h-full relative max-w-3xl'>
-      <div className='max-w-xs mx-auto z-50'>
+      <div className='max-w-xs mx-auto z-50 my-2 mb-5'>
         <Combobox value={selectedCreature} onChange={setSelectedCreature}>
           <div className="relative">
             <div className="relative w-full cursor-default rounded-lg bg-white text-left mb-2">
@@ -191,7 +193,7 @@ export default function MonsterManual({ creatures }) {
                 displayValue={(person) => person.name}
                 onChange={(event) => setQuery(event.target.value)}
                 spellCheck='false'
-                placeholder='Search for a creature...'
+                placeholder='Search monsters...'
                 // autoFocus={true}
               />
               <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
@@ -260,15 +262,15 @@ export default function MonsterManual({ creatures }) {
         </Combobox>
       </div>
       <Image 
-        className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[250px] opacity-50 -z-10 scale-150' 
-        src='/swords.svg' 
+        className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] opacity-100 -z-10' 
+        src='/swords.png' 
         alt='crossed swords' 
-        height={72} 
-        width={72}
+        height={700} 
+        width={700}
       />
       {
         data && (
-          <section className='p-4 my-3 rounded-sm max-h-[94%] bg-paper shadow-lg shadow-black text-sm space-y-2 leading-[21px] overflow-auto'>
+          <section className='p-4 my-3 rounded-sm max-h-[90%] bg-paper shadow-lg shadow-black text-sm space-y-2 leading-[21px] overflow-auto'>
             <div className={`${imgUrl && 'grid md:grid-cols-2 md:gap-x-4'}`}>
                 <div className='space-y-2'>
                   <div>
