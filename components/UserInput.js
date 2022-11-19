@@ -2,13 +2,11 @@ import { Transition } from '@headlessui/react'
 import { ChevronDownIcon, ChevronUpIcon, ChevronDoubleUpIcon } from '@heroicons/react/24/solid'
 import React, { useEffect, useState } from 'react'
 import { useRecoilState } from 'recoil'
-import { activeCreaturesState } from '../atoms/activeCreaturesAtom'
 import { hiddenUserInputState } from '../atoms/hiddenUserInputAtom'
 import CreatureSelectForm from './CreatureSelectForm'
 
 export default function UserInput({ creatures }) {
   const [tab, setTab] = useState('player');
-  const [activeCreatures, setActiveCreatures] = useRecoilState(activeCreaturesState)
   const [isHidden, setIsHidden] = useRecoilState(hiddenUserInputState);
 
   useEffect(() => {

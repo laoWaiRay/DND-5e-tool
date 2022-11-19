@@ -260,7 +260,7 @@ export default function MonsterManual({ creatures }) {
         </Combobox>
       </div>
       <Image 
-        className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-1/2 max-w-sm opacity-50 -z-10' 
+        className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[250px] opacity-50 -z-10 scale-150' 
         src='/swords.svg' 
         alt='crossed swords' 
         height={72} 
@@ -268,7 +268,7 @@ export default function MonsterManual({ creatures }) {
       />
       {
         data && (
-          <section className='p-4 my-3 rounded-sm h-[94%] bg-paper shadow-lg shadow-black text-sm space-y-2 leading-[21px] overflow-auto'>
+          <section className='p-4 my-3 rounded-sm max-h-[94%] bg-paper shadow-lg shadow-black text-sm space-y-2 leading-[21px] overflow-auto'>
             <div className={`${imgUrl && 'grid md:grid-cols-2 md:gap-x-4'}`}>
                 <div className='space-y-2'>
                   <div>

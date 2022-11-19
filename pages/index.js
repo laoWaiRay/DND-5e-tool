@@ -8,10 +8,13 @@ import Loader from '../components/Loader'
 import Main from '../components/Main'
 import MonsterManual from '../components/MonsterManual'
 import { Transition } from '@headlessui/react'
+import { spellbookState } from '../atoms/spellbookAtom'
+import Spellbook from '../components/Spellbook'
 
-export default function Home({ creatures }) {
+export default function Home({ creatures, spells }) {
   const [isLoading] = useRecoilState(loadingState)
   const [monsterManualOpen, setMonsterManualOpen] = useRecoilState(monsterManualState)
+  const [spellbookOpen, setSpellbookOpen] = useRecoilState(spellbookState)
   // This stuff is to prevent input scrolling from scrolling the body
   const ref = useRef(null)
 
@@ -23,7 +26,7 @@ export default function Home({ creatures }) {
   }, [ref])
 
   useEffect(() => {
-    if (monsterManualOpen)
+    if (monsterManualOpen || spellbookOpen)
     {
       document.body.style.position = 'fixed'
       document.body.style.width = '100vw'
@@ -34,7 +37,7 @@ export default function Home({ creatures }) {
       document.body.style.width = ''
     }
       
-  }, [monsterManualOpen])
+  }, [monsterManualOpen, spellbookOpen])
   
   return (
     // Overflow hidden is amazing !!!
@@ -59,7 +62,7 @@ export default function Home({ creatures }) {
         show={monsterManualOpen}
         appear={true}
         unmount={false}
-        enter="transition-all duration-300"
+        enter={`transition-all duration-300`}
         enterFrom="opacity-0 ease-in scale-0"
         enterTo="opacity-100 scale-100"
         leave="transition-all ease-out duration-300"
@@ -72,6 +75,24 @@ export default function Home({ creatures }) {
         />
       </Transition>
 
+       {/* Spellbook */}
+       <Transition
+        show={spellbookOpen}
+        appear={true}
+        unmount={false}
+        enter={`transition-all duration-300`}
+        enterFrom="opacity-0 ease-in scale-0"
+        enterTo="opacity-100 scale-100"
+        leave="transition-all ease-out duration-300"
+        leaveFrom="opacity-100 scale-100"
+        leaveTo="opacity-0 scale-0"
+        className='fixed w-screen height-minus-header mm-bg sm:px-6 pt-4 pb-6 px-2 flex justify-center'
+      >
+        <Spellbook
+          spells={spells}
+        />
+      </Transition>
+
       {/* Loading spinner */}
       {/* {
         isLoading  && <Loader />
@@ -81,13 +102,19 @@ export default function Home({ creatures }) {
 }
 
 export async function getServerSideProps() {
-  const res = await fetch('https://www.dnd5eapi.co/api/monsters');
-  const json = await res.json();
+  let res = await fetch('https://www.dnd5eapi.co/api/monsters');
+  // const res = await fetch('https://api.open5e.com/monsters/?limit=1469');
+  let json = await res.json();
   const creatures = json.results;
+
+  res = await fetch('https://www.dnd5eapi.co/api/spells');
+  json = await res.json();
+  const spells = json.results;
 
   return {
     props: {
-      creatures
+      creatures,
+      spells
     },
   }
 }

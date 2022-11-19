@@ -10,6 +10,7 @@ import { useRecoilState } from 'recoil'
 import PopupDEX from './PopupDEX'
 import { selectedCreatureState } from '../atoms/selectedCreatureAtom'
 import { monsterManualState } from '../atoms/monsterManualAtom'
+import WarningModal from './WarningModal'
 
 export default function DisplayCardCreature({ creatureData, windowSize, ...rest }) {
   const [activeCreatures, setActiveCreatures] = useRecoilState(activeCreaturesState);
@@ -124,13 +125,22 @@ export default function DisplayCardCreature({ creatureData, windowSize, ...rest 
       {/* Underlay */}
       <div 
         className='absolute bg-gray-900 top-0 left-0 w-full h-full rounded-md flex 
-        justify-end items-center'
+        justify-end items-center pr-1.5'
       >
-        <div className='bg-red-500 rounded-md mr-1.5 p-1 cursor-pointer'
-          onClick={handleDelete}
-        >
-          <XMarkIcon className='w-5 h-5 text-white'/>
-        </div>
+        {
+          creatureData.pc == false ? (
+            <div className='bg-red-500 rounded-md p-1 cursor-pointer'
+              onClick={handleDelete}
+            >
+              <XMarkIcon className='w-5 h-5 text-white'/>
+            </div>
+          ) : (
+            <WarningModal
+              handleDelete={handleDelete}
+              elementRef={elementRef}
+            />
+          )
+        }    
       </div>
 
       {/* Main Card */}
