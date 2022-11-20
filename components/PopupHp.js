@@ -2,17 +2,37 @@ import { Popover, Transition } from '@headlessui/react'
 import React, { useRef, useState, useEffect } from 'react'
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline'
 import { HeartIcon } from '@heroicons/react/24/solid'
+import { activeCreaturesState } from '../atoms/activeCreaturesAtom';
+import { useRecoilState } from 'recoil';
 
 
-export default function PopupHp({ creatureData }) {
+export default function PopupHp({ creatureData, setStateData, stateData }) {
+  const [activeCreatures] = useRecoilState(activeCreaturesState)
   const [input, setInput] = useState(0);
   const [tmpHpInput, setTmpHpInput] = useState(0);
-  const [hp, setHp] = useState(parseInt(creatureData.max_hp))
-  const [tmpHp, setTmpHp] = useState(0);
+  const [hp, setHp] = useState(parseInt(creatureData.hp))
+  const [tmpHp, setTmpHp] = useState(creatureData.tmpHp);
   const [isHovering, setIsHovering] = useState(false);
   const [listenerActive, setListenerActive] = useState(false)
   const closeRef = useRef(null)
   const popupRef = useRef(null)
+
+  const updateHpData = (hp, tmpHp) => {
+    const newStateData = { ...stateData };
+    newStateData.hp = parseInt(hp);
+    newStateData.tmpHp = parseInt(tmpHp);
+    setStateData(newStateData)
+  }
+
+  useEffect(() => {
+    if (creatureData.hp) {
+      setHp(parseInt(creatureData.hp))
+    }
+  }, [creatureData])
+
+  useEffect(() => {
+    updateHpData(hp, tmpHp)
+  }, [hp, tmpHp])
 
   useEffect(() => {
     if (listenerActive)

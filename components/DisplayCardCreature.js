@@ -16,8 +16,8 @@ export default function DisplayCardCreature({ creatureData, windowSize, ...rest 
   const [activeCreatures, setActiveCreatures] = useRecoilState(activeCreaturesState);
   const [selectedCreature, setSelectedCreature] = useRecoilState(selectedCreatureState)
   const [isMonsterManualOpen, setIsMonsterManualOpen] = useRecoilState(monsterManualState)
-  const [activeStatuses, setActiveStatuses] = useState([]);
-  const [overflowStatuses, setOverflowStatuses] = useState([]);
+  const [activeStatuses, setActiveStatuses] = useState([...creatureData.activeStatuses]);
+  const [overflowStatuses, setOverflowStatuses] = useState([...creatureData.overflowStatuses]);
   const [isHoverEllipses, setIsHoverEllipses] = useState(false);
   const [isOverflowed, setIsOverflowed] = useState(false);
   const [isAvailableSpace, setIsAvailableSpace] = useState(false);
@@ -28,6 +28,24 @@ export default function DisplayCardCreature({ creatureData, windowSize, ...rest 
   const cardRef = useRef(null);
   const elementRef = useRef(null)
   const nameRef = useRef(null)
+  const isMounted = useRef(false)
+  const [stateData, setStateData] = useState({
+    ...creatureData,
+    activeStatuses: [...creatureData.activeStatuses],
+    overflowStatuses: [...creatureData.overflowStatuses],
+    hp: parseInt(creatureData.hp),
+    tmpHp: parseInt(creatureData.tmpHp),
+    ac: parseInt(creatureData.ac),
+    bonusAc: parseInt(creatureData.dex_bonus),
+    color: creatureData.color
+  })
+
+  const updateStatusData = (active, overflow) => {
+    const newStateData = { ...stateData };
+    newStateData.activeStatuses = active;
+    newStateData.overflowStatuses = overflow;
+    setStateData(newStateData)
+  }
 
   useEffect(() => {
     const elt = statusBarRef.current
@@ -68,6 +86,9 @@ export default function DisplayCardCreature({ creatureData, windowSize, ...rest 
   }, [windowSize, isOverflowed, isAvailableSpace]);
 
   useEffect(() => {
+    if (activeStatuses.length == 0)
+      return
+
     if (cardRef.current.clientWidth < cardRef.current.scrollWidth)
       window.dispatchEvent(new Event('resize'))
   }, [windowSize])
@@ -106,7 +127,6 @@ export default function DisplayCardCreature({ creatureData, windowSize, ...rest 
   }, [creatureData])
 
   const handleDelete = () => {
-    console.log(creatureData, activeCreatures)
     let newActiveCreatures = [...activeCreatures]
     newActiveCreatures = newActiveCreatures.filter((creature) => creature.id != creatureData.id)
     setActiveCreatures(newActiveCreatures)
@@ -116,6 +136,28 @@ export default function DisplayCardCreature({ creatureData, windowSize, ...rest 
     setIsMonsterManualOpen(true);
     setSelectedCreature(creatureData)
   }
+
+ 
+
+  useEffect(() => {
+    updateStatusData(activeStatuses, overflowStatuses)
+  }, [activeStatuses, overflowStatuses])
+
+  useEffect(() => {
+    if (creatureData.activeStatuses.length > 0) {
+      updateStatusData(creatureData.activeStatuses, creatureData.overflowStatuses)
+    }
+  }, [creatureData])
+
+  useEffect(() => {
+    // Don't run on mount
+    if (isMounted.current) {
+      localStorage.setItem(stateData.id, JSON.stringify(stateData));
+    } else {
+      isMounted.current = true;
+    }
+  }, [stateData])
+
  
   return (
     <div 
@@ -152,11 +194,11 @@ export default function DisplayCardCreature({ creatureData, windowSize, ...rest 
       >
         <div className={`flex w-full space-x-2 top-0 left-0 ${isSlid && 'pointer-events-none'}`}>
           {/* Name */}
-          <div className='cursor-pointer'>
+          <div className={`${ creatureData.pc == false && creatureData.npc == false && 'cursor-pointer' }`}>
             <span 
               className={`${creatureData.pc && 'text-amber-400'}`}
               ref={nameRef}
-              onClick={openMonsterManual}
+              onClick={(creatureData.pc == false && creatureData.npc == false) ? openMonsterManual : null}
             >
               {creatureData.name}
             </span>
@@ -165,12 +207,16 @@ export default function DisplayCardCreature({ creatureData, windowSize, ...rest 
           { creatureData.pc === false &&
             <PopupHp 
               creatureData={creatureData}
+              setStateData={setStateData}
+              stateData={stateData}
             />
           }
           {/* AC */}
           { creatureData.pc === false &&
             <PopupAc 
               creatureData={creatureData}
+              setStateData={setStateData}
+              stateData={stateData}
             />
           }
           
@@ -235,6 +281,8 @@ export default function DisplayCardCreature({ creatureData, windowSize, ...rest 
           <div>
             <PopupDEX 
               creatureData={creatureData}
+              setStateData={setStateData}
+              stateData={stateData}
             />
           </div> 
         </div>

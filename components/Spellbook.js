@@ -57,6 +57,21 @@ export default function Spellbook({ spells }) {
     return num + suffix;
  };
 
+  const replaceAsterisksBold = (str) => {
+    if (str.indexOf('***') != -1) {
+      return str.split("***").map((sub, index) => {
+        if (sub.length == 0)
+          return
+        if (index == 1)
+          return <span key={index} className='font-bold italic'>{sub}</span>
+        else
+          return <span key={index}>{sub}</span>
+      });
+    } else {
+      return str
+    }
+  };
+
   return (
     <div className='w-full h-full relative max-w-3xl'>
       <div className='max-w-xs mx-auto z-50 mb-5'>
@@ -179,7 +194,11 @@ export default function Spellbook({ spells }) {
             <div className='space-y-2 py-3 !my-3 border-y border-red-900 border-opacity-70'>
               {
                 data.desc.map((elt, index) => (
-                  <p key={index}>{elt}</p>
+                  <p key={index}>
+                    {
+                      replaceAsterisksBold(elt)
+                    }
+                  </p>
                 ))
               }
             </div>

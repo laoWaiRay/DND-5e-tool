@@ -13,6 +13,39 @@ export default function Display() {
   const [windowSize, setWindowSize] = useState([0, 0]);
   const [columns, setColumns] = useState([]);
 
+  const allStorage = () => {
+    const order = JSON.parse(localStorage.getItem('order'));
+
+    if (!order || order.length == 0) {
+      const keys = Object.keys(localStorage);
+      const values = [];
+      let i = keys.length;
+
+      while (i--)
+        values.push(JSON.parse(localStorage.getItem(keys[i])));
+
+      return values
+    } else {
+      const values = [];
+      order.forEach((id) => {
+        values.push(JSON.parse(localStorage.getItem(id.toString())))
+      })
+      return values
+    }
+
+  }
+
+  useEffect(() => {
+    const items = allStorage()
+    items.forEach((item) => console.dir(item))
+    setActiveCreatures(items)
+  }, [setActiveCreatures])
+
+  useEffect(()=>{
+    const order = activeCreatures.map((creature) => creature.id);
+    localStorage.setItem('order', JSON.stringify(Array.from(order)))
+  }, [activeCreatures])
+
   const onDragEnd = useCallback((result, ...rest) => {
     console.log(result, rest)
     if (!result.destination)
@@ -63,8 +96,6 @@ export default function Display() {
           sameInitiatives.push(num)
       }
     }
-    // console.log(activeCreatures)
-    // console.log(sameInitiatives)
     const newColumns = []
     sameInitiatives.forEach((initiative) => {
       const creatures = [];
@@ -78,7 +109,6 @@ export default function Display() {
       })
     })
     setColumns(newColumns)
-    // setCommonInitiatives(sameInitiatives)
   }, [activeCreatures])
 
   const chunkCreatures = (creatures) => {
@@ -107,13 +137,13 @@ export default function Display() {
   const mapActiveCreatures = (creatures) => {
     if (!creatures)
       return
-    // console.log(creatures)
+
     const chunkedCreatures = chunkCreatures(creatures)
-    // console.log(chunkedCreatures)
-    // console.log('no chunk')
 
     if (!chunkedCreatures)
       return
+
+    console.log('chunk', chunkedCreatures)
 
     let ret = chunkedCreatures.map((elt) => {
       if (elt.length === 1) {
@@ -125,12 +155,13 @@ export default function Display() {
           />
         )
       } else {
+        elt.forEach(el => console.log(el.id.toString()))
         return (
           <Droppable key={elt[0].initiative} droppableId={elt[0].initiative.toString()}>
             {(provided) => (
               <div {...provided.droppableProps} ref={provided.innerRef} className='m-0 select-none'>
                 {elt.map((creature, index) => (
-                  <Draggable key={creature.id} draggableId={creature.id.toString()} index={index}>
+                  <Draggable key={creature.id.toString()} draggableId={creature.id.toString()} index={index}>
                     { (provided) => (
                       <div
                         {...provided.draggableProps}
@@ -152,15 +183,9 @@ export default function Display() {
         )
       }
     })
-    // console.log('ret', ret)
 
     return ret
   }
-
-  // useEffect(() => {
-  //   const chunkedCreatures = chunkCreatures(activeCreatures)
-  //   setChunkedCreatures(chunkedCreatures)
-  // }, [activeCreatures])
 
   return (
     <DragDropContext
@@ -185,7 +210,7 @@ export default function Display() {
           : ''
         }
         {
-          mapActiveCreatures(activeCreatures) 
+          activeCreatures.length > 0 && mapActiveCreatures(activeCreatures) 
         }
         <Transition
           show={activeCreatures.length >= 14 && isHidden}

@@ -71,7 +71,7 @@ export default function Conditions({ conditions }) {
             </div>
           ))
         }
-        <div className='h-[410px]'></div>
+        <div className='h-[350px]'></div>
       </section>
         
       <div 

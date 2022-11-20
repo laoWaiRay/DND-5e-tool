@@ -98,7 +98,7 @@ export default function CreatureSelectForm({ creatures, tab }) {
           const newItem = {
             ...newArray[i]
           }
-          newItem.color = availableColors[Math.floor(Math.random() * availableColors.length)]
+          newItem.color = availableColors[Math.floor(Math.random() * availableColors.length)].hex()
           newArray[i] = newItem
         }
       }
@@ -133,7 +133,12 @@ export default function CreatureSelectForm({ creatures, tab }) {
       dex_bonus: parseInt(bonus),
       ac: parseInt(ac),
       pc: false,  // Player Character
-      color: null
+      npc: false,
+      color: null,
+      tmpHp: 0,
+      hp: parseInt(hp),
+      activeStatuses: [],
+      overflowStatuses: [],
     }
     updateList(selectedCreatureData)
   }
@@ -147,7 +152,12 @@ export default function CreatureSelectForm({ creatures, tab }) {
       name: name,
       initiative: parseInt(init),
       dex_bonus: parseInt(bonus),
-      pc: true
+      pc: true,
+      npc: false,
+      tmpHp: 0,
+      hp: parseInt(hp),
+      activeStatuses: [],
+      overflowStatuses: [],
     }
     updateList(playerData)
   }
@@ -164,7 +174,12 @@ export default function CreatureSelectForm({ creatures, tab }) {
       dex_bonus: parseInt(bonus),
       ac: parseInt(ac),
       pc: false,  // Player Character
-      color: null
+      npc: true,
+      color: null,
+      tmpHp: 0,
+      hp: parseInt(hp),
+      activeStatuses: [],
+      overflowStatuses: [],
     }
     updateList(customData)
   }
@@ -188,7 +203,6 @@ export default function CreatureSelectForm({ creatures, tab }) {
   const clearZero = (e, input, setInput) => {
     if (input == '0')
       setInput('')
-    // stopBodyScroll()
   }
 
   useEffect(() => {

@@ -27,11 +27,11 @@ export default function PopupOverflow({ isHoverEllipses, overflowStatuses }) {
             <div className='absolute bg-gray-400 w-[17px] h-[1px] -rotate-45 top-[5px] -left-[14.5px]' />
           </div>
           {
-            overflowStatuses.map((status) => (
-              <span key={status.id} className='flex space-x-2 items-center mr-4' >
-                <span>{status.name}</span>
+            overflowStatuses.length != 0 && overflowStatuses.map((status) => (
+              <span key={status?.id} className='flex space-x-2 items-center mr-4' >
+                <span>{status?.name}</span>
                 <span>
-                  <Image src={status.url} width={16} height={16} alt={status.name} />
+                  <Image src={status?.url} width={16} height={16} alt={status.name} />
                 </span>
               </span>
             ))

@@ -4,13 +4,30 @@ import ShieldIcon from './ShieldIcon'
 import { CheckCircleIcon } from '@heroicons/react/24/outline'
 
 
-export default function PopupAc({ creatureData }) {
+export default function PopupAc({ creatureData, stateData, setStateData }) {
   const [baseAcInput, setBaseAcInput] = useState(creatureData.ac)
   const [baseAc, setBaseAc] = useState(creatureData.ac);
   const [bonusAcInput, setBonusAcInput] = useState(0);
-  const [bonusAc, setBonusAc] = useState(0);
+  const [bonusAc, setBonusAc] = useState(creatureData.dex_bonus || 0);
   const closeRef = useRef(null)
   const popupRef = useRef(null)
+
+  const updateAcData = (baseAc, bonusAc) => {
+    const newStateData = { ...stateData };
+    newStateData.dex_bonus = parseInt(bonusAc);
+    newStateData.ac = parseInt(baseAc);
+    setStateData(newStateData)
+  }
+
+  useEffect(() => {
+    if (creatureData.ac) {
+      setBaseAc(parseInt(creatureData.ac))
+    }
+  }, [creatureData])
+
+  useEffect(() => {
+    updateAcData(baseAc, bonusAc)
+  }, [baseAc, bonusAc])
 
   useEffect(() => {
     setBaseAcInput(baseAc)

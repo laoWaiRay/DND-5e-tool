@@ -1,15 +1,30 @@
 import { Popover } from '@headlessui/react'
 import { CheckCircleIcon } from '@heroicons/react/24/outline'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useRecoilState } from 'recoil'
 import { activeCreaturesState } from '../atoms/activeCreaturesAtom'
 
-export default function PopupDEX({ creatureData }) {
+export default function PopupDEX({ creatureData, setStateData, stateData }) {
   const [activeCreatures, setActiveCreatures] = useRecoilState(activeCreaturesState);
   const [dexBonusOpen, setDexBonusOpen] = useState(false)
-  const [dexBonus, setDexBonus] = useState(creatureData.dex_bonus)
   const [dexBonusInput, setDexBonusInput] = useState(creatureData.dex_bonus)
   const closeRef = useRef(null)
+
+  const updateDexData = (dexBonus) => {
+    const newStateData = { ...stateData };
+    newStateData.dex_bonus = parseInt(dexBonus);
+    setStateData(newStateData)
+  }
+
+  useEffect(() => {
+    if (creatureData.dex_bonus) {
+      setDexBonusInput(parseInt(creatureData.dex_bonus))
+    }
+  }, [creatureData])
+
+  useEffect(() => {
+    updateDexData(dexBonusInput)
+  }, [dexBonusInput])
 
   const handleSubmit = (e) => {
     e.preventDefault()

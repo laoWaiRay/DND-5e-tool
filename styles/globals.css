@@ -64,11 +64,16 @@ a {
 }
 
 .mm-bg {
-  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.5)),linear-gradient(to bottom, #3498db, #2c3e50); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.55)),linear-gradient(to bottom, #3498db, #2c3e50); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 .bg-paper {
-  background: linear-gradient(#c9b887 0 , hsl(49, 30%, 75%) 3% 95%, #c9b887 100%);
+  background: linear-gradient(#c9b887 0 , hsl(49, 30%, 70%) 3% 95%, #c9b887 100%);
+}
+
+.bg-awesome {
+  background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('/sick_bg.JPG');
+  background-image: ;
 }
 
 
