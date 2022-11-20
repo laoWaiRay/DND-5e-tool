@@ -48,7 +48,7 @@ export default function Header() {
   return (
     <div className='px-6 py-0 md:py-0 md:px-8 bg-gray-900 w-full z-50'>
       <div className='flex items-center w-full'>
-        <div className='relative aspect-auto mr-2 flex items-center'>
+        <div className='relative aspect-auto mr-2 flex items-center shrink-0'>
           <Image src='/images/d20-holo.png' alt='d20' className='h-6 w-6' height={24} width={24} />
         </div>
         <div className='relative aspect-auto hidden md:flex md:items-center'>

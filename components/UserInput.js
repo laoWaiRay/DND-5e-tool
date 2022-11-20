@@ -20,7 +20,7 @@ export default function UserInput({ creatures }) {
 
   return (
     <>
-    <div className='mt-auto relative max-w-2xl'>
+    <div className='mt-auto relative max-w-2xl w-full'>
       <Transition
         show={!isHidden}
         enter="transition-transform duration-150 delay-150"

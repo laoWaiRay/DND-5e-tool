@@ -362,7 +362,7 @@ export default function CreatureSelectForm({ creatures, tab }) {
 
         <div className='text-gray-100 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2'>
           Initiative
-          <span className='inline-block'>(total) :</span>
+          <span className='block'>(total) :</span>
         </div>
         <div className='text-gray-100 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2'>Bonus :</div>
         {
