@@ -10,11 +10,20 @@ export default function PopupStatus({ activeStatuses, setActiveStatuses, isOverf
   const [selectedStatus, setSelectedStatus] = useState('');
   const [query, setQuery] = useState('')
   const [statuses, setStatuses] = useState(allStatuses)
+  const [isOpen, setIsOpen] = useState(false)
+  const [windowOverflowed, setWindowOverflowed] = useState(false)
   const popupRef = useRef(null)
 
   useEffect(() => {
-    // if (!selectedStatus)
-    //   return
+    if (!popupRef.current || windowOverflowed == true)
+      return
+    
+    console.log(popupRef.current.getBoundingClientRect().bottom)
+    const isOverflowing = popupRef.current.getBoundingClientRect().bottom > window.innerHeight;
+    setWindowOverflowed(isOverflowing)
+  }, [isOpen, windowOverflowed])
+
+  useEffect(() => {
     let newStatuses = [...allStatuses];
     newStatuses = newStatuses.filter((status) => 
       !activeStatuses.find((el) => el.name == status.name) && !overflowStatuses.find((el) => el.name == status.name)
@@ -68,22 +77,25 @@ export default function PopupStatus({ activeStatuses, setActiveStatuses, isOverf
         <Popover.Button>
           <div 
             className='border border-gray-300 rounded-sm hover:bg-gray-900'
+            onClick={() => setIsOpen(!isOpen)}
           >
             <PlusSmallIcon className='w-4 h-4 text-gray-300'/>
           </div>
         </Popover.Button>
 
         <Popover.Panel 
-          className="absolute top-[48px] z-50 left-0"
+          className={`${!windowOverflowed ? 'top-[48px]' : '-top-[90px]'} absolute left-0 z-50`}
         >
           <div 
-            className='flex absolute z-10 -left-[1px] bg-gray-900 py-4 px-4 rounded-md 
-            border border-gray-400 outline-none shadow-lg shadow-black'
+            ref={popupRef}
+            className={`flex absolute z-10 -left-[1px] bg-gray-900 py-4 px-4 rounded-md cursor-default
+            border border-gray-400 outline-none shadow-lg ${!windowOverflowed && 'shadow-black'}`}
           >
             <div
-              className='absolute w-0 h-0 bg-transparent left-5 -top-7 border-[16px] 
+              className={`absolute w-0 h-0 bg-transparent left-5 border-[16px] 
               border-gray-900 border-t-transparent border-r-transparent border-l-transparent
-              border-b-gray-900'
+              border-b-gray-900 
+              ${!windowOverflowed ? '-top-7' : 'rotate-180 -bottom-7'}`}
             >
               <div className='absolute bg-gray-400 w-[18px] h-[1px] rotate-45 top-[5px] -right-[15px]' />
               <div className='absolute bg-gray-400 w-[17px] h-[1px] -rotate-45 top-[5px] -left-[14.5px]' />

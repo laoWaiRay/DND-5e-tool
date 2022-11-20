@@ -9,7 +9,7 @@ export default function About() {
         <h1 className='text-2xl'>D&D 5e Combat Tracker</h1>
         <p>
           This tool solely contains monsters and spells from the SRD and is therefore covered under the 
-          <span className='font-serif italic'> Wizards of the Coast </span>Open Game License. <span className='text-xs italic'>Please don&apos;t sue me ~~</span>
+          <span className='font-serif italic'> Wizards of the Coast </span>Open Game License.
         </p>
         <p>
           <div className='mt-8'>

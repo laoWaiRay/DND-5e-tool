@@ -37,7 +37,6 @@ export default function Display() {
 
   useEffect(() => {
     const items = allStorage()
-    items.forEach((item) => console.dir(item))
     setActiveCreatures(items)
   }, [setActiveCreatures])
 
@@ -47,7 +46,6 @@ export default function Display() {
   }, [activeCreatures])
 
   const onDragEnd = useCallback((result, ...rest) => {
-    console.log(result, rest)
     if (!result.destination)
       return
 
@@ -55,7 +53,6 @@ export default function Display() {
       return
 
     const items = Array.from(activeCreatures)
-    console.log(items)
 
     const creature = items.find((item) => item.initiative == result.source.droppableId)
     const indexOffset = items.indexOf(creature)
@@ -143,8 +140,6 @@ export default function Display() {
     if (!chunkedCreatures)
       return
 
-    console.log('chunk', chunkedCreatures)
-
     let ret = chunkedCreatures.map((elt) => {
       if (elt.length === 1) {
         return (
@@ -155,7 +150,6 @@ export default function Display() {
           />
         )
       } else {
-        elt.forEach(el => console.log(el.id.toString()))
         return (
           <Droppable key={elt[0].initiative} droppableId={elt[0].initiative.toString()}>
             {(provided) => (

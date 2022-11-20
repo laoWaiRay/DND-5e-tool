@@ -9,8 +9,18 @@ export default function PopupAc({ creatureData, stateData, setStateData }) {
   const [baseAc, setBaseAc] = useState(creatureData.ac);
   const [bonusAcInput, setBonusAcInput] = useState(0);
   const [bonusAc, setBonusAc] = useState(creatureData.dex_bonus || 0);
+  const [isOpen, setIsOpen] = useState(false)
+  const [isOverflowed, setIsOverflowed] = useState(false)
   const closeRef = useRef(null)
   const popupRef = useRef(null)
+
+  useEffect(() => {
+    if (!popupRef.current || isOverflowed == true)
+      return
+    console.log(popupRef.current.getBoundingClientRect().bottom)
+    const isOverflowing = popupRef.current.getBoundingClientRect().bottom > window.innerHeight;
+    setIsOverflowed(isOverflowing)
+  }, [isOpen, isOverflowed])
 
   const updateAcData = (baseAc, bonusAc) => {
     const newStateData = { ...stateData };
@@ -58,7 +68,7 @@ export default function PopupAc({ creatureData, stateData, setStateData }) {
     <div className='hidden' ref={closeRef}></div>
     <Popover className="flex">
       <Popover.Button
-        onClick={() => document.addEventListener('click', listenForClickOutside)}
+        onClick={() => { document.addEventListener('click', listenForClickOutside); setIsOpen(!isOpen) }}
       >
         <div className='relative'>
           <div 
@@ -81,14 +91,16 @@ export default function PopupAc({ creatureData, stateData, setStateData }) {
       >
         {({ close }) => (
           <div 
-            className='flex absolute z-10 -left-[1px] bg-gray-900 py-4 px-4 rounded-md 
-            border border-gray-400 outline-none shadow-lg shadow-black'
+            className={`flex absolute z-10  bg-gray-900 py-4 px-4 rounded-md 
+            border border-gray-400 outline-none  shadow-black cursor-default
+            ${!isOverflowed ? '-bottom-[103px] -left-[1px] shadow-lg' : 'bottom-[50px] left-0'}`}
             ref={popupRef}
           >
             <div
-              className='absolute w-0 h-0 bg-transparent left-5 -top-7 border-[16px] 
+              className={`absolute w-0 h-0 bg-transparent left-5 border-[16px] 
               border-gray-900 border-t-transparent border-r-transparent border-l-transparent
-              border-b-gray-900'
+              border-b-gray-900 
+              ${!isOverflowed ? '-top-7' : 'rotate-180 -bottom-7'}`}
             >
               <div className='absolute bg-gray-400 w-[18px] h-[1px] rotate-45 top-[5px] -right-[15px]' />
               <div className='absolute bg-gray-400 w-[17px] h-[1px] -rotate-45 top-[5px] -left-[14.5px]' />

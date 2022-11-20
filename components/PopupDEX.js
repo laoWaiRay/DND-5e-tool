@@ -8,7 +8,18 @@ export default function PopupDEX({ creatureData, setStateData, stateData }) {
   const [activeCreatures, setActiveCreatures] = useRecoilState(activeCreaturesState);
   const [dexBonusOpen, setDexBonusOpen] = useState(false)
   const [dexBonusInput, setDexBonusInput] = useState(creatureData.dex_bonus)
+  const [isOpen, setIsOpen] = useState(false)
+  const [isOverflowed, setIsOverflowed] = useState(false)
   const closeRef = useRef(null)
+  const popupRef = useRef(null);
+
+  useEffect(() => {
+    if (!popupRef.current || isOverflowed == true)
+      return
+    console.log(popupRef.current.getBoundingClientRect().bottom)
+    const isOverflowing = popupRef.current.getBoundingClientRect().bottom > window.innerHeight;
+    setIsOverflowed(isOverflowing)
+  }, [isOpen, isOverflowed])
 
   const updateDexData = (dexBonus) => {
     const newStateData = { ...stateData };
@@ -60,16 +71,18 @@ export default function PopupDEX({ creatureData, setStateData, stateData }) {
         </div>
       </Popover.Button>
 
-      <Popover.Panel className="absolute top-[48px] z-50 left-0">
+      <Popover.Panel className={`${!isOverflowed ? 'top-[48px]' : '-top-[90px]'} absolute left-0 z-50`}>
         {({ close }) => (
           <div 
-            className='flex absolute z-10 -left-[1px] bg-gray-900 py-4 px-4 rounded-md 
-            border border-gray-400 outline-none shadow-lg shadow-black'
+            ref={popupRef}
+            className={`flex absolute z-10 -left-[1px] bg-gray-900 py-4 px-4 rounded-md cursor-auto
+            border border-gray-400 outline-none shadow-lg ${!isOverflowed && 'shadow-black'}`}
           >
             <div
-              className='absolute w-0 h-0 bg-transparent left-5 -top-7 border-[16px] 
+              className={`absolute w-0 h-0 bg-transparent left-5 border-[16px] 
               border-gray-900 border-t-transparent border-r-transparent border-l-transparent
-              border-b-gray-900'
+              border-b-gray-900 
+              ${!isOverflowed ? '-top-7' : 'rotate-180 -bottom-7'}`}
             >
               <div className='absolute bg-gray-400 w-[18px] h-[1px] rotate-45 top-[5px] -right-[15px]' />
               <div className='absolute bg-gray-400 w-[17px] h-[1px] -rotate-45 top-[5px] -left-[14.5px]' />
