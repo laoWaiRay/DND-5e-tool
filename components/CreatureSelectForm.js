@@ -360,7 +360,7 @@ export default function CreatureSelectForm({ creatures, tab }) {
           )
         }
 
-        <div className='text-gray-100 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2'>Initiative (total) :</div>
+        <div className='text-gray-100 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2 whitespace-nowrap'>Initiative (total) :</div>
         <div className='text-gray-100 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2'>Bonus :</div>
         {
           tab != 'player' && (
