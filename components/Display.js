@@ -16,6 +16,9 @@ export default function Display() {
   const allStorage = () => {
     const order = JSON.parse(localStorage.getItem('order'));
 
+    if (order[0] == null)
+      return []
+
     if (!order || order.length == 0) {
       const keys = Object.keys(localStorage);
       const values = [];

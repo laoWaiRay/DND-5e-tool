@@ -16,7 +16,7 @@ export default function DisplayCardCreature({ creatureData, windowSize, ...rest 
   const [activeCreatures, setActiveCreatures] = useRecoilState(activeCreaturesState);
   const [selectedCreature, setSelectedCreature] = useRecoilState(selectedCreatureState)
   const [isMonsterManualOpen, setIsMonsterManualOpen] = useRecoilState(monsterManualState)
-  const [activeStatuses, setActiveStatuses] = useState([...creatureData.activeStatuses]);
+  const [activeStatuses, setActiveStatuses] = useState([...creatureData?.activeStatuses]);
   const [overflowStatuses, setOverflowStatuses] = useState([...creatureData.overflowStatuses]);
   const [isHoverEllipses, setIsHoverEllipses] = useState(false);
   const [isOverflowed, setIsOverflowed] = useState(false);
