@@ -153,6 +153,7 @@ export default function Spellbook({ spells }) {
         </Combobox>
       </div>
       <Image 
+        priority
         className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-50 -z-10 scale-x-110 scale-y-105 w-[400px]' 
         src='/tree.png' 
         alt='crossed swords' 

@@ -263,6 +263,7 @@ export default function MonsterManual({ creatures }) {
         </Combobox>
       </div>
       <Image 
+        priority
         className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] opacity-100 -z-10' 
         src='/swords.png' 
         alt='crossed swords' 
