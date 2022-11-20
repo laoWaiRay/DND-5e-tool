@@ -123,32 +123,7 @@ export default function PopupDEX({ creatureData, setStateData, stateData }) {
                 <button className='ml-3'>
                   <CheckCircleIcon className='w-8 h-8 hover:text-green-500 transition-colors duration-150 ease-in'/>
                 </button>   
-                
-                {/* <div>
-                  <h2 className='pb-1 text-sm'>Bonuses</h2>
-                  <input
-                    className='rounded-md py-0.5 pr-1 text-stone-700 focus:border-gray-600 focus:ring-gray-600'
-                    type='number'
-                    value={bonusAcInput}
-                    onChange= {(e) => {
-                      if (!e.target.value)
-                      {
-                        setBonusAcInput(0)
-                      }
-                      else if (e.target.value.length >= 3) {
-                        setBonusAcInput(Math.floor(parseInt(e.target.value) / 10))
-                      }
-                      else if (e.target.value[0] == '0') {
-                        setBonusAcInput(e.target.value.slice(-1))
-                      }
-                      else {
-                        setBonusAcInput(parseInt(e.target.value))
-                      }
-                    }}
-                    min={0}
-                    max={99}
-                  />
-                </div> */}
+
               </div>
             </form>
           </div>
