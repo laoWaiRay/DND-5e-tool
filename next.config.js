@@ -5,14 +5,6 @@ const nextConfig = {
   images: {
     domains: ['media-waterdeep.cursecdn.com']
   },
-  // remotePatterns: [
-  //   {
-  //     protocol: 'https',
-  //     hostname: 'media-waterdeep.cursecdn.com',
-  //     port: '',
-  //     pathname: '/avatars/thumbnails/**',
-  //   },
-  // ],
 }
 
 module.exports = nextConfig

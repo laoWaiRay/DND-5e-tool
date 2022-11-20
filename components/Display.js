@@ -200,7 +200,7 @@ export default function Display() {
           ? (
               <div 
                 className='flex justify-center py-3 px-4 border border-gray-700 bg-gray-800 text-stone-300
-                rounded-md shadow-md relative'>
+                rounded-md shadow-md relative text-center'>
                 Add something below to get started
               </div>
             )

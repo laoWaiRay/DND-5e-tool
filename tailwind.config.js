@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: {
+        'sm': '524px'
+      },
       keyframes: {
         hideScroll: {
           '0%, 100%': { overflow: 'hidden' },

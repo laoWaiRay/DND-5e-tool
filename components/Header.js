@@ -6,6 +6,7 @@ import { conditionsState } from '../atoms/conditionsAtom'
 import { monsterManualState } from '../atoms/monsterManualAtom'
 import { scrollToConditionState } from '../atoms/scrollToConditionAtom'
 import { spellbookState } from '../atoms/spellbookAtom'
+import { Bars3Icon } from '@heroicons/react/24/outline'
 
 export default function Header() {
   const [monsterManualOpen, setMonsterManualOpen] = useRecoilState(monsterManualState)
@@ -46,7 +47,7 @@ export default function Header() {
   }
 
   return (
-    <div className='px-6 py-0 md:py-0 md:px-8 bg-gray-900 w-full z-50'>
+    <div className='px-6 pr-5 py-0 md:py-0 sm:px-8 bg-gray-900 w-full z-50'>
       <div className='flex items-center w-full'>
         <div className='relative aspect-auto mr-2 flex items-center shrink-0'>
           <Image src='/images/d20-holo.png' alt='d20' className='h-6 w-6' height={24} width={24} />
@@ -55,37 +56,42 @@ export default function Header() {
           <Image src='/images/logo-light.png' alt='logo' className='h-8 w-64' height={32} width={256} priority />
         </div>
         
-        <nav className='flex text-gray-400 space-x-4 flex-1 ml-4'>
+        <nav className='flex text-gray-400 space-x-4 flex-1 ml-4 justify-end sm:justify-start'>
           <div 
             className={`cursor-pointer ${!transitioning && !monsterManualOpen && !spellbookOpen 
-            && !conditionsOpen && !aboutOpen && 'text-gray-100'} py-4`}
+            && !conditionsOpen && !aboutOpen && 'text-gray-100'} py-4 hidden sm:block`}
             onClick={() => { closeAllPages() }}
           >
             Battle
           </div>
           <div 
-            className={`whitespace-nowrap cursor-pointer ${monsterManualOpen && 'text-gray-100'} py-4`}
+            className={`whitespace-nowrap cursor-pointer ${monsterManualOpen && 'text-gray-100'} py-4
+            hidden sm:block `}
             onClick={() => { openPage([spellbookOpen, conditionsOpen, aboutOpen], setMonsterManualOpen) }}
           >
             Monster Manual
           </div>
           <div
-            className={`cursor-pointer ${spellbookOpen && 'text-gray-100'} py-4`}
+            className={`cursor-pointer ${spellbookOpen && 'text-gray-100'} py-4 hidden sm:block`}
             onClick={() => { openPage([monsterManualOpen, conditionsOpen, aboutOpen], setSpellbookOpen) }}
           >
             Spells
           </div>
           <div
-            className={`cursor-pointer ${conditionsOpen && 'text-gray-100'} py-4`}
+            className={`cursor-pointer ${conditionsOpen && 'text-gray-100'} py-4 hidden sm:block`}
             onClick={() => { openPage([monsterManualOpen, spellbookOpen, aboutOpen], setConditionsOpen) }}
           >
             Conditions
           </div>
           <div
-            className={`cursor-pointer ${aboutOpen && 'text-gray-100'} py-4`}
+            className={`cursor-pointer ${aboutOpen && 'text-gray-100'} py-4 hidden sm:block`}
             onClick={() => { openPage([monsterManualOpen, spellbookOpen, conditionsOpen], setAboutOpen) }}
           >
             About
+          </div>
+
+          <div className='p-1.5 sm:hidden pr-0'>
+            <Bars3Icon className='w-9 h-10 rounded-sm'/>
           </div>
         </nav>
       </div>
