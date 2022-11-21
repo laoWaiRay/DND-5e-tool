@@ -8,7 +8,8 @@ module.exports = {
   theme: {
     extend: {
       screens: {
-        'sm': '524px'
+        'sm': '524px',
+        'xs': '490px'
       },
       keyframes: {
         hideScroll: {

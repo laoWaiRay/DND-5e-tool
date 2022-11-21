@@ -11,6 +11,7 @@ import PopupDEX from './PopupDEX'
 import { selectedCreatureState } from '../atoms/selectedCreatureAtom'
 import { monsterManualState } from '../atoms/monsterManualAtom'
 import WarningModal from './WarningModal'
+import EllipsisPopup from './EllipsisPopup'
 
 export default function DisplayCardCreature({ creatureData, windowSize, ...rest }) {
   const [activeCreatures, setActiveCreatures] = useRecoilState(activeCreaturesState);
@@ -18,7 +19,8 @@ export default function DisplayCardCreature({ creatureData, windowSize, ...rest 
   const [isMonsterManualOpen, setIsMonsterManualOpen] = useRecoilState(monsterManualState)
   const [activeStatuses, setActiveStatuses] = useState([...creatureData?.activeStatuses]);
   const [overflowStatuses, setOverflowStatuses] = useState([...creatureData.overflowStatuses]);
-  const [isHoverEllipses, setIsHoverEllipses] = useState(false);
+  const [isHoverEllipsis, setIsHoverEllipsis] = useState(false);
+  const [ellipsisPopupOpen, setEllipsisPopupOpen] = useState(false);
   const [isOverflowed, setIsOverflowed] = useState(false);
   const [isAvailableSpace, setIsAvailableSpace] = useState(false);
   const [isSlid, setIsSlid] = useState(false)
@@ -51,7 +53,7 @@ export default function DisplayCardCreature({ creatureData, windowSize, ...rest 
     const elt = statusBarRef.current
     const inner = statusBarInnerRef.current
     let isOverflowing = elt.clientWidth < elt.scrollWidth;
-    let isSpace = elt.clientWidth - inner.clientWidth > 30;
+    let isSpace = elt.clientWidth - inner.clientWidth > 24;
 
     if (isOverflowing)
       setIsOverflowed(true)
@@ -85,13 +87,13 @@ export default function DisplayCardCreature({ creatureData, windowSize, ...rest 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [windowSize, isOverflowed, isAvailableSpace]);
 
-  useEffect(() => {
-    if (activeStatuses.length == 0)
-      return
+  // useEffect(() => {
+  //   if (activeStatuses.length == 0)
+  //     return
 
-    if (cardRef.current.clientWidth < cardRef.current.scrollWidth)
-      window.dispatchEvent(new Event('resize'))
-  }, [windowSize])
+  //   if (cardRef.current.clientWidth < cardRef.current.scrollWidth)
+  //     window.dispatchEvent(new Event('resize'))
+  // }, [isOverflowed, isAvailableSpace])
 
   useEffect(() => {
     if (!isSlid)
@@ -129,6 +131,7 @@ export default function DisplayCardCreature({ creatureData, windowSize, ...rest 
   const handleDelete = () => {
     let newActiveCreatures = [...activeCreatures]
     newActiveCreatures = newActiveCreatures.filter((creature) => creature.id != creatureData.id)
+    localStorage.removeItem(creatureData.id)
     setActiveCreatures(newActiveCreatures)
   }
 
@@ -136,8 +139,6 @@ export default function DisplayCardCreature({ creatureData, windowSize, ...rest 
     setIsMonsterManualOpen(true);
     setSelectedCreature(creatureData)
   }
-
- 
 
   useEffect(() => {
     updateStatusData(activeStatuses, overflowStatuses)
@@ -245,12 +246,19 @@ export default function DisplayCardCreature({ creatureData, windowSize, ...rest 
                 overflowStatuses.length > 0 &&
                 (
                   <div
-                    className='z-40 block'
-                    onClick={(e) => setIsHoverEllipses(!isHoverEllipses)}
-                    onMouseEnter={(e) => setIsHoverEllipses(true)}  
-                    onMouseLeave={(e) => setIsHoverEllipses(false)}
+                    className='z-40 flex'
+                    // onClick={(e) => setIsHoverEllipsis(!isHoverEllipsis)}
                   >
-                    <EllipsisHorizontalCircleIcon className='w-4 h-4' />
+                    {/* Overflow status popup menu */}
+                    <EllipsisPopup 
+                      setEllipsisPopupOpen={setEllipsisPopupOpen}
+                      activeStatuses={activeStatuses}
+                      setActiveStatuses={setActiveStatuses}
+                      overflowStatuses={overflowStatuses}
+                      setOverflowStatuses={setOverflowStatuses}
+                      setIsHoverEllipsis={setIsHoverEllipsis}
+                      isHoverEllipsis={isHoverEllipsis}
+                    />
                   </div>
                 )
               }        
@@ -273,7 +281,7 @@ export default function DisplayCardCreature({ creatureData, windowSize, ...rest 
 
           {/* Overflow status popup */}
           <PopupOverflow 
-            isHoverEllipses={isHoverEllipses}
+            isHoverEllipsis={isHoverEllipsis}
             overflowStatuses={overflowStatuses}
           />
 

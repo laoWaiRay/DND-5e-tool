@@ -2,11 +2,11 @@ import { Transition } from '@headlessui/react'
 import Image from 'next/image'
 import React from 'react'
 
-export default function PopupOverflow({ isHoverEllipses, overflowStatuses }) {
+export default function PopupOverflow({ isHoverEllipsis, overflowStatuses }) {
   return (
     <div className='absolute w-full -left-[9px] top-0 z-50'>
        <Transition
-        show={isHoverEllipses}
+        show={isHoverEllipsis}
         enter="transition-opacity duration-75"
         enterFrom="opacity-0"
         enterTo="opacity-100"
@@ -27,14 +27,19 @@ export default function PopupOverflow({ isHoverEllipses, overflowStatuses }) {
             <div className='absolute bg-gray-400 w-[17px] h-[1px] -rotate-45 top-[5px] -left-[14.5px]' />
           </div>
           {
-            overflowStatuses.length != 0 && overflowStatuses.map((status) => (
-              <span key={status?.id} className='flex space-x-2 items-center mr-4' >
-                <span>{status?.name}</span>
-                <span>
-                  <Image src={status?.url} width={16} height={16} alt={status.name} />
-                </span>
-              </span>
-            ))
+            overflowStatuses.length != 0 && overflowStatuses.map((status) => {
+              if (!status)
+                return
+              else
+                return (
+                  <span key={status?.id} className='flex space-x-2 items-center mr-4' >
+                    <span>{status?.name}</span>
+                    <span>
+                      <Image src={status?.url} width={16} height={16} alt={status.name} />
+                    </span>
+                  </span>
+                )
+            })
           }
         </div>
       </Transition>

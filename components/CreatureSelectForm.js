@@ -243,11 +243,11 @@ export default function CreatureSelectForm({ creatures, tab }) {
   return (
     <form 
       className={`p-4 text-gray-800 grid grid-cols-[1fr_1fr_minmax(125px,1fr)] gap-2 transition-all 
-      duration-150 ease-in-out overflow-hidden
-      ${tab === 'player' ? 'h-[160px]' : 'h-[248px]'}`}
+      duration-150 ease-in-out overflow-auto 
+      ${tab === 'player' ? 'xs:h-[160px]' : 'xs:h-[248px]'}`}
       onSubmit={tab == 'player' ? addPlayerToList : tab == 'creatures' ? addCreatureToList : addCustomToList}
     >
-      <div className='col-span-2'>
+      <div className='col-span-3 xs:col-span-2'>
         {
           tab === 'player' || tab === 'custom' ?
             (
@@ -349,7 +349,7 @@ export default function CreatureSelectForm({ creatures, tab }) {
         
     
       </div>
-      <div className='grid grid-cols-2 gap-2 items-center'>
+      <div className='grid grid-cols-2 gap-2 items-center col-span-3 xs:col-span-1'>
         {
           tab != 'player' &&
           (

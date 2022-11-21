@@ -1,6 +1,6 @@
 import { Transition } from '@headlessui/react'
 import { ChevronDoubleUpIcon } from '@heroicons/react/24/outline'
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { useRecoilState } from 'recoil'
 import { activeCreaturesState } from '../atoms/activeCreaturesAtom'
 import { hiddenUserInputState } from '../atoms/hiddenUserInputAtom'
@@ -12,12 +12,14 @@ export default function Display() {
   const [isHidden, setIsHidden] = useRecoilState(hiddenUserInputState);
   const [windowSize, setWindowSize] = useState([0, 0]);
   const [columns, setColumns] = useState([]);
-
+  const isMounted = useRef(false)
   const allStorage = () => {
     const order = JSON.parse(localStorage.getItem('order'));
 
     if (!order || order[0] == null)
+    {
       return []
+    }
 
     if (!order || order.length == 0) {
       const keys = Object.keys(localStorage);
@@ -45,7 +47,10 @@ export default function Display() {
 
   useEffect(()=>{
     const order = activeCreatures.map((creature) => creature.id);
-    localStorage.setItem('order', JSON.stringify(Array.from(order)))
+    if (isMounted.current)
+      localStorage.setItem('order', JSON.stringify(Array.from(order)))
+    else
+      isMounted.current = true
   }, [activeCreatures])
 
   const onDragEnd = useCallback((result, ...rest) => {
@@ -199,7 +204,7 @@ export default function Display() {
           === 0
           ? (
               <div 
-                className='flex justify-center py-3 px-4 border border-gray-700 bg-gray-800 text-stone-300
+                className='flex justify-center py-3 px-2 sm:px-4 border border-gray-700 bg-gray-800 text-stone-300
                 rounded-md shadow-md relative text-center'>
                 Add something below to get started
               </div>

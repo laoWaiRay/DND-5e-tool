@@ -33,7 +33,7 @@ export default function Home({ creatures, spells, conditions }) {
   }, [ref])
 
   useEffect(() => {
-    if (monsterManualOpen || spellbookOpen)
+    if (monsterManualOpen || spellbookOpen || conditionsOpen)
     {
       document.body.style.position = 'fixed'
       document.body.style.width = '100vw'
@@ -44,7 +44,7 @@ export default function Home({ creatures, spells, conditions }) {
       document.body.style.width = ''
     }
       
-  }, [monsterManualOpen, spellbookOpen])
+  }, [monsterManualOpen, spellbookOpen, conditionsOpen])
   
   return (
     // Overflow hidden is amazing !!!
