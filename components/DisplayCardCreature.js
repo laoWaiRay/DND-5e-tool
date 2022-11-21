@@ -87,13 +87,16 @@ export default function DisplayCardCreature({ creatureData, windowSize, ...rest 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [windowSize, isOverflowed, isAvailableSpace]);
 
-  // useEffect(() => {
-  //   if (activeStatuses.length == 0)
-  //     return
+  useEffect(() => {
+    if (!isOverflowed || activeStatuses.length == 0)
+      return
 
-  //   if (cardRef.current.clientWidth < cardRef.current.scrollWidth)
-  //     window.dispatchEvent(new Event('resize'))
-  // }, [isOverflowed, isAvailableSpace])
+    let i = 0;
+    while (isOverflowed && i < 10) {
+      window.dispatchEvent(new Event('resize'))
+      i++;
+    }
+  }, [windowSize, activeStatuses.length, isOverflowed])
 
   useEffect(() => {
     if (!isSlid)
@@ -230,23 +233,29 @@ export default function DisplayCardCreature({ creatureData, windowSize, ...rest 
               ref={statusBarInnerRef}
             >
               { 
-                activeStatuses.map((stat) => (
-                  <StatusIcon 
-                    key={stat.u_id}
-                    stat={stat}
-                    activeStatuses={activeStatuses}
-                    setActiveStatuses={setActiveStatuses}
-                    overflowStatuses={overflowStatuses}
-                    setOverflowStatuses={setOverflowStatuses}
-                  />
-                ))
+                activeStatuses.map((stat) => {
+                  if (stat) {
+                    return (
+                      <StatusIcon 
+                        key={stat.u_id}
+                        stat={stat}
+                        activeStatuses={activeStatuses}
+                        setActiveStatuses={setActiveStatuses}
+                        overflowStatuses={overflowStatuses}
+                        setOverflowStatuses={setOverflowStatuses}
+                      />
+                    )
+                  } else {
+                    return
+                  }
+                })
               }
 
               {
                 overflowStatuses.length > 0 &&
                 (
                   <div
-                    className='z-40 flex'
+                    className='z-0 flex'
                     // onClick={(e) => setIsHoverEllipsis(!isHoverEllipsis)}
                   >
                     {/* Overflow status popup menu */}

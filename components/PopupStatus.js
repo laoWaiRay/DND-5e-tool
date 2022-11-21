@@ -24,14 +24,15 @@ export default function PopupStatus({ activeStatuses, setActiveStatuses, isOverf
   }, [isOpen, windowOverflowed])
 
   useEffect(() => {
+    if (activeStatuses.length == 0)
+      return
+
     let newStatuses = [...allStatuses];
-    newStatuses = newStatuses.filter((status) => 
-      !activeStatuses.find((el) => el.name == status.name) && !overflowStatuses.find((el) => el.name == status.name)
+    newStatuses = newStatuses.filter((status) =>
+        !activeStatuses.find((el) => el?.name == status.name) && !overflowStatuses.find((el) => el.name == status.name)
       )
 
-    setStatuses(prev => {
-      return newStatuses
-    })
+    setStatuses(newStatuses)
     setSelectedStatus('')
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeStatuses, overflowStatuses])

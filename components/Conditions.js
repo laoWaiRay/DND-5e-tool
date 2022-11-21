@@ -18,8 +18,8 @@ export default function Conditions({ conditions }) {
 
   return (
     <div className='w-full h-full relative max-w-3xl'>
-      <section className='text-gray-900 p-4 my-3 mt-10 rounded-sm max-h-[95%] bg-paper shadow-lg shadow-black 
-      text-sm space-y-2 leading-6 overflow-auto min-[950px]:mt-3'>
+      <section className='text-gray-900 p-4 my-3 rounded-sm max-h-[95%] bg-paper shadow-lg shadow-black 
+      text-sm space-y-2 leading-6 overflow-auto'>
         <h1 className='text-2xl font-bold font-serif -mb-3'>Conditions</h1>
         {
           conditions.map((condition, index) => (
@@ -75,8 +75,8 @@ export default function Conditions({ conditions }) {
       </section>
         
       <div 
-        className='absolute right-3 -top-3 z-50 text-gray-300 cursor-pointer hover:text-purple-600 
-        transition-all duration-150 ease min-[950px]:-right-20 min-[950px]:top-1'
+        className='hidden xs:block absolute right-6 top-5 z-50 text-gray-800 min-[950px]:text-gray-300 cursor-pointer hover:text-red-600 
+        transition-all duration-150 ease min-[950px]:-right-20 min-[950px]:top-1 rounded-full'
       >
         <ReturnButton />
       </div>

@@ -11,7 +11,7 @@ export default function About() {
           This tool solely contains monsters and spells from the SRD and is therefore covered under the 
           <span className='font-serif italic'> Wizards of the Coast </span>Open Game License.
         </p>
-        <p>
+        <div>
           <div className='mt-8'>
             <h2 className='text-xl font-light mb-1'>Credits</h2>
             <ul>
@@ -43,9 +43,9 @@ export default function About() {
             </h2>
             <a className='font-serif italic hover:text-orange-300 transition-all duration-150 ease' href='https://github.com/laoWaiRay'>laoWaiRay</a>
           </div>
-        </p>
+        </div>
 
-        <div className='absolute right-3 top-1.5 z-50 text-gray-300 cursor-pointer hover:text-purple-600 transition-all duration-150 ease'>
+        <div className='hidden xs:block absolute right-3 top-1.5 z-50 text-gray-300 cursor-pointer hover:text-purple-600 transition-all duration-150 ease'>
           <ReturnButton />
         </div>
       </div>

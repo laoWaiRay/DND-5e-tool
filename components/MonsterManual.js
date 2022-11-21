@@ -408,7 +408,7 @@ export default function MonsterManual({ creatures }) {
         )
       }
       
-      <div className='absolute right-3 top-0.5 z-50 text-gray-300 cursor-pointer hover:text-purple-600 transition-all duration-150 ease'>
+      <div className='hidden xs:block absolute right-3 top-0.5 z-50 text-gray-300 cursor-pointer hover:text-purple-600 transition-all duration-150 ease'>
         <ReturnButton />
       </div>
     </div>

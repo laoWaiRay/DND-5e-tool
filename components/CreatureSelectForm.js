@@ -243,11 +243,11 @@ export default function CreatureSelectForm({ creatures, tab }) {
   return (
     <form 
       className={`p-4 text-gray-800 grid grid-cols-[1fr_1fr_minmax(125px,1fr)] gap-2 transition-all 
-      duration-150 ease-in-out overflow-auto 
+      duration-150 ease-in-out overflow-hidden relative
       ${tab === 'player' ? 'xs:h-[160px]' : 'xs:h-[248px]'}`}
       onSubmit={tab == 'player' ? addPlayerToList : tab == 'creatures' ? addCreatureToList : addCustomToList}
     >
-      <div className='col-span-3 xs:col-span-2'>
+      <div className='col-span-3 xs:col-span-2 justify-self-center w-full relative'>
         {
           tab === 'player' || tab === 'custom' ?
             (
@@ -299,7 +299,7 @@ export default function CreatureSelectForm({ creatures, tab }) {
                   <Combobox.Options 
                     className="absolute mt-1 max-h-44 w-full overflow-auto rounded-md bg-gray-50 py-1 
                     shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none scrollbar-thin 
-                    scrollbar-thumb-gray-400 scrollbar-thumb-rounded-md"
+                    scrollbar-thumb-gray-400 scrollbar-thumb-rounded-md z-10"
                   >
                     {filteredCreatures.length === 0 && query !== '' ? (
                       <div className="relative cursor-default select-none py-0.5 px-3 text-gray-700">
@@ -347,9 +347,26 @@ export default function CreatureSelectForm({ creatures, tab }) {
           : null
         }
         
+        {/* Background image */}
+        {tab != 'player' &&
+          <Image
+            priority
+            src='/dragon-red.png' width={195} height={200} alt='dragon'
+            className='absolute bottom-0 left-1/2 -translate-x-1/2 z-0 opacity-60 hidden xs:block'
+          />
+        }
+        {tab == 'player' &&
+          <div className='absolute bottom-0 left-1/2 -translate-x-1/2 z-0 opacity-100 hidden xs:block'>
+            <Image 
+              priority
+              src='/helmet.png' width={140} height={140} alt='barbarian helmet'
+            />
+          </div>
+        }
+        
     
       </div>
-      <div className='grid grid-cols-2 gap-2 items-center col-span-3 xs:col-span-1'>
+      <div className='grid grid-cols-2 gap-2 items-center col-span-3 xs:col-span-1 w-36 justify-self-end sm:justify-self-center'>
         {
           tab != 'player' &&
           (
@@ -442,6 +459,23 @@ export default function CreatureSelectForm({ creatures, tab }) {
           Add
         </button>
       </div>
+
+      {/* Background image */}
+      {tab != 'player' &&
+        <Image 
+          priority
+          src='/dragon-red.png' width={180} height={200} alt='dragon'
+          className='absolute left-[8vw] bottom-11 z-0 opacity-60 xs:hidden'
+        />
+      }
+      {tab == 'player' &&
+        <div className='absolute left-[8vw] bottom-11 z-0 opacity-90 xs:hidden'>
+          <Image 
+            priority
+            src='/helmet.png' width={140} height={140} alt='barbarian helmet'
+          />
+        </div>
+        }
     </form>
   )
 }
