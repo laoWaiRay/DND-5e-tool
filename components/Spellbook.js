@@ -154,9 +154,10 @@ export default function Spellbook({ spells }) {
       </div>
       <Image 
         priority
-        className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-50 -z-10 scale-x-110 scale-y-105 w-[400px]' 
+        className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-50 -z-10 scale-y-95
+        w-[400px]' 
         src='/tree.png' 
-        alt='crossed swords' 
+        alt='tree' 
         height={700} 
         width={700}
       />
@@ -216,6 +217,7 @@ export default function Spellbook({ spells }) {
                 data.classes.map((classData) => classData.name).join(', ')
               }
             </div>
+            <div className='h-[350px] w-full'></div>
           </section>
         )
       }

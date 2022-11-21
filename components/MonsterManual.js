@@ -404,6 +404,7 @@ export default function MonsterManual({ creatures }) {
                 }
               </div>
             )}
+            <div className='h-[350px] w-full'></div>
           </section>
         )
       }
