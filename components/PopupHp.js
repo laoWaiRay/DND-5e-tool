@@ -15,6 +15,11 @@ export default function PopupHp({ creatureData, setStateData, stateData }) {
   const [isOpen, setIsOpen] = useState(false)
   const [isOverflowed, setIsOverflowed] = useState(false)
 
+  const resetInputs = () => {
+    setTmpHpInput(parseInt(tmpHp))
+    setInput(0)
+  }
+
   const updateHpData = (hp, tmpHp) => {
     const newStateData = { ...stateData };
     newStateData.hp = parseInt(hp);
@@ -44,15 +49,10 @@ export default function PopupHp({ creatureData, setStateData, stateData }) {
     if (listenerActive)
       return
 
-    setTmpHpInput(prev => {
-      return tmpHp
-    })
-  }, [tmpHp, listenerActive])
+    resetInputs()
+  }, [hp, tmpHp, listenerActive])
 
-  const resetInputs = () => {
-    setTmpHpInput(tmpHp)
-    setInput(0)
-  }
+  
 
   const listenForClickOutside = (e) => {
     setListenerActive(true)
@@ -100,7 +100,7 @@ export default function PopupHp({ creatureData, setStateData, stateData }) {
     }
 
     let damageBuffer = parseInt(input);
-    let tmpHpBuffer = tmpHp;
+    let tmpHpBuffer = parseInt(tmpHp);
 
     if (tmpHpBuffer > 0)
     {
