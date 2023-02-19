@@ -214,9 +214,10 @@ export default function CreatureSelectForm({ creatures, tab }) {
     const fetchData = async () => {
       const res = await fetch(`https://www.dnd5eapi.co` + selectedCreature.url);
       const json = await res.json()
+      console.log("JSON: ", json);
       setBonus(Math.floor((parseInt(json.dexterity) - 10) / 2))
       setHp(json.hit_points)
-      setAc(json.armor_class)
+      setAc(json.armor_class[0].value)
       setInit(0)
       setIsLoading(false)
     }

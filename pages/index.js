@@ -4,7 +4,6 @@ import { useRecoilState } from 'recoil'
 import { loadingState } from '../atoms/loadingAtom'
 import { monsterManualState } from '../atoms/monsterManualAtom'
 import Header from '../components/Header'
-import Loader from '../components/Loader'
 import Main from '../components/Main'
 import MonsterManual from '../components/MonsterManual'
 import { Transition } from '@headlessui/react'
@@ -17,7 +16,6 @@ import About from '../components/About'
 import { aboutState } from '../atoms/aboutAtom'
 
 export default function Home({ creatures, spells, conditions }) {
-  const [isLoading] = useRecoilState(loadingState)
   const [monsterManualOpen, setMonsterManualOpen] = useRecoilState(monsterManualState)
   const [spellbookOpen, setSpellbookOpen] = useRecoilState(spellbookState)
   const [conditionsOpen, setConditionsOpen] = useRecoilState(conditionsState)
@@ -54,7 +52,6 @@ export default function Home({ creatures, spells, conditions }) {
     >
       <Head>
         <title>Roll For Initiative</title>
-        {/* <link rel="icon" href="/d20-holo.png" /> */}
       </Head>
 
       <Header />

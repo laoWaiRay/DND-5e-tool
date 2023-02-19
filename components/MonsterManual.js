@@ -282,7 +282,7 @@ export default function MonsterManual({ creatures }) {
                   <div className='flex flex-col border-y-2 border-red-900 py-2'>
                     <span>
                       <span className='font-semibold text-red-800'>Armor Class</span> 
-                      {' '}{data.armor_class}
+                      {' '}{data.armor_class[0].value}
                     </span>
                     <span>
                       <span className='font-semibold text-red-800'>Hit Points</span> 
