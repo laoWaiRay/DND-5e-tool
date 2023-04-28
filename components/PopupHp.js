@@ -198,7 +198,7 @@ export default function PopupHp({ creatureData, setStateData, stateData }) {
           <Popover.Panel className="absolute top-[49px] z-50 left-0 w-full"> 
               <div 
                 className={`flex absolute z-10  bg-gray-900 py-4 px-4 rounded-md 
-                border border-gray-400 outline-none  shadow-black cursor-default
+                border border-gray-600 outline-none  shadow-black cursor-default
                 ${!isOverflowed ? '-bottom-[103px] -left-[1px] shadow-lg' : 'bottom-[50px] left-0'}`}
                 onKeyDown={(e) => handleKeyDown(e, close)}
                 tabIndex='0'
@@ -210,8 +210,8 @@ export default function PopupHp({ creatureData, setStateData, stateData }) {
                   border-b-gray-900 
                   ${!isOverflowed ? '-top-7' : 'rotate-180 -bottom-7'}`}
                 >
-                  <div className='absolute bg-gray-400 w-[18px] h-[1px] rotate-45 top-[5px] -right-[15px]' />
-                  <div className='absolute bg-gray-400 w-[17px] h-[1px] -rotate-45 top-[5px] -left-[14.5px]' />
+                  <div className='absolute bg-gray-600 w-[18px] h-[1px] rotate-45 top-[5px] -right-[15px]' />
+                  <div className='absolute bg-gray-600 w-[17px] h-[1px] -rotate-45 top-[5px] -left-[14.5px]' />
                 </div>
                 <div className='flex'>
                   <div className='w-full flex flex-col space-y-2'>
@@ -266,7 +266,7 @@ export default function PopupHp({ creatureData, setStateData, stateData }) {
                         max={999}
                       />
                       <button 
-                        className='bg-transparent border border-gray-300 text-sm p-[5px] px-2 rounded text-gray-300'
+                        className='bg-transparent border border-gray-500 text-sm p-[5px] px-2 rounded text-gray-300'
                         onClick={(e) => changeTmpHp(e, close)}
                       >
                         Change
@@ -276,7 +276,7 @@ export default function PopupHp({ creatureData, setStateData, stateData }) {
 
 
                   <div className=' ml-3 flex flex-col justify-between'>
-                    <QuestionMarkCircleIcon className='w-5 h-5 text-gray-400' 
+                    <QuestionMarkCircleIcon className='w-5 h-5 text-gray-300' 
                       onMouseOver={handleMouseOver}
                       onMouseOut={handleMouseOut}
                     />

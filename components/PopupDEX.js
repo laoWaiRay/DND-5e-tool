@@ -76,7 +76,7 @@ export default function PopupDEX({ creatureData, setStateData, stateData }) {
           <div 
             ref={popupRef}
             className={`flex absolute z-10 -left-[1px] bg-gray-900 py-4 px-4 rounded-md cursor-auto
-            border border-gray-400 outline-none shadow-lg ${!isOverflowed && 'shadow-black'}`}
+            border border-gray-600 outline-none shadow-lg ${!isOverflowed && 'shadow-black'}`}
           >
             <div
               className={`absolute w-0 h-0 bg-transparent left-5 border-[16px] 
@@ -84,8 +84,8 @@ export default function PopupDEX({ creatureData, setStateData, stateData }) {
               border-b-gray-900 
               ${!isOverflowed ? '-top-7' : 'rotate-180 -bottom-7'}`}
             >
-              <div className='absolute bg-gray-400 w-[18px] h-[1px] rotate-45 top-[5px] -right-[15px]' />
-              <div className='absolute bg-gray-400 w-[17px] h-[1px] -rotate-45 top-[5px] -left-[14.5px]' />
+              <div className='absolute bg-gray-600 w-[18px] h-[1px] rotate-45 top-[5px] -right-[15px]' />
+              <div className='absolute bg-gray-600 w-[17px] h-[1px] -rotate-45 top-[5px] -left-[14.5px]' />
             </div>
 
             <form 

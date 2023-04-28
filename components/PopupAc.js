@@ -92,7 +92,7 @@ export default function PopupAc({ creatureData, stateData, setStateData }) {
         {({ close }) => (
           <div 
             className={`flex absolute z-10  bg-gray-900 py-4 px-4 rounded-md 
-            border border-gray-400 outline-none  shadow-black cursor-default
+            border border-gray-600 outline-none  shadow-black cursor-default
             ${!isOverflowed ? '-bottom-[103px] -left-[1px] shadow-lg' : 'bottom-[50px] left-0'}`}
             ref={popupRef}
           >
@@ -102,8 +102,8 @@ export default function PopupAc({ creatureData, stateData, setStateData }) {
               border-b-gray-900 
               ${!isOverflowed ? '-top-7' : 'rotate-180 -bottom-7'}`}
             >
-              <div className='absolute bg-gray-400 w-[18px] h-[1px] rotate-45 top-[5px] -right-[15px]' />
-              <div className='absolute bg-gray-400 w-[17px] h-[1px] -rotate-45 top-[5px] -left-[14.5px]' />
+              <div className='absolute bg-gray-600 w-[18px] h-[1px] rotate-45 top-[5px] -right-[15px]' />
+              <div className='absolute bg-gray-600 w-[17px] h-[1px] -rotate-45 top-[5px] -left-[14.5px]' />
             </div>
 
             <form 

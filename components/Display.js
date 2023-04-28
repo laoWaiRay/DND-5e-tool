@@ -1,5 +1,6 @@
 import { Transition } from '@headlessui/react'
 import { ChevronDoubleUpIcon } from '@heroicons/react/24/outline'
+import { ArrowPathIcon } from '@heroicons/react/24/solid'
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { useRecoilState } from 'recoil'
 import { activeCreaturesState } from '../atoms/activeCreaturesAtom'
@@ -197,7 +198,10 @@ export default function Display() {
         {activeCreatures.length != 0 &&
           <div
             id='topOfTheRound'
-            className='text-gray-300 font-semibold text-center py-1.5 text-sm tracking-wide'>TOP OF THE ROUND
+            className='text-gray-300 font-semibold text-center py-1.5 text-sm tracking-wide
+            flex justify-center items-center'>
+            <span>TOP OF THE ROUND!</span>
+            <ArrowPathIcon className='w-6 h-6 text-gray-300 ml-3 hover:cursor-pointer'></ArrowPathIcon>
           </div>
         }
         {activeCreatures.length 

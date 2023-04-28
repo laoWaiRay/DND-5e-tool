@@ -243,7 +243,7 @@ export default function CreatureSelectForm({ creatures, tab }) {
 
   return (
     <form 
-      className={`p-4 text-gray-800 grid grid-cols-[1fr_1fr_minmax(125px,1fr)] gap-2 transition-all 
+      className={`m-4 text-gray-800 grid grid-cols-[1fr_1fr_150px] gap-2 transition-all 
       duration-150 ease-in-out overflow-hidden relative
       ${tab === 'player' ? 'xs:h-[160px]' : 'xs:h-[248px]'}`}
       onSubmit={tab == 'player' ? addPlayerToList : tab == 'creatures' ? addCreatureToList : addCustomToList}
@@ -353,36 +353,38 @@ export default function CreatureSelectForm({ creatures, tab }) {
           <Image
             priority
             src='/dragon-red.png' width={195} height={200} alt='dragon'
-            className='absolute bottom-0 left-1/2 -translate-x-1/2 z-0 opacity-60 hidden xs:block'
+            className='absolute bottom-[15px] left-1/2 -translate-x-1/2 z-0 opacity-60 hidden xs:block'
           />
         }
         {tab == 'player' &&
-          <div className='absolute bottom-0 left-1/2 -translate-x-1/2 z-0 opacity-100 hidden xs:block'>
+          <div className='absolute bottom-[15px] left-1/2 -translate-x-1/2 z-0 opacity-100 hidden xs:block'>
             <Image 
               priority
               src='/helmet.png' width={140} height={140} alt='barbarian helmet'
             />
           </div>
         }
-        
-    
       </div>
-      <div className='grid grid-cols-2 gap-2 items-center col-span-3 xs:col-span-1 w-36 justify-self-end sm:justify-self-center'>
+
+      <div className='grid grid-cols-[1fr, 1fr] gap-2 items-center col-span-3 xs:col-span-1 w-36 justify-self-end sm:justify-self-center'>
         {
           tab != 'player' &&
           (
             <>
-              <div className='text-gray-100 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2'>HP :</div>
-              <div className='text-gray-100 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2'>AC :</div>
+              <div className='text-gray-100 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2'>HP</div>
+              <div className='text-gray-100 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2'>AC</div>
             </>
           )
         }
 
         <div className='text-gray-100 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2'>
           Initiative
-          <span className='block'>(total) :</span>
+          <span className='block'>(total) </span>
         </div>
-        <div className='text-gray-100 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2'>Bonus :</div>
+        <div className='text-gray-100 px-2 rounded-md w-full text-center text-xs col-start-1 col-end-2'>
+          Bonus
+          <span className='block'>(optional) </span>
+        </div>
         {
           tab != 'player' && (
             <div 

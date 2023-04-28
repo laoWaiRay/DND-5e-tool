@@ -15,7 +15,7 @@ export default function PopupOverflow({ isHoverEllipsis, overflowStatuses }) {
         leaveTo="opacity-0"
       >
         <div 
-          className='absolute top-12 left-0 w-[calc(100%+2px)] bg-gray-900 border border-gray-400 p-2 pl-4 rounded-md text-sm 
+          className='absolute top-12 left-0 w-[calc(100%+2px)] bg-gray-900 border border-gray-600 p-2 pl-4 rounded-md text-sm 
           flex flex-wrap justify-start min-h-[50px]'
         >
           <div
@@ -23,8 +23,8 @@ export default function PopupOverflow({ isHoverEllipsis, overflowStatuses }) {
             border-gray-900 border-t-transparent border-r-transparent border-l-transparent
             border-b-gray-900'
           >
-            <div className='absolute bg-gray-400 w-[18px] h-[1px] rotate-45 top-[5px] -right-[15px]' />
-            <div className='absolute bg-gray-400 w-[17px] h-[1px] -rotate-45 top-[5px] -left-[14.5px]' />
+            <div className='absolute bg-gray-600 w-[18px] h-[1px] rotate-45 top-[5px] -right-[15px]' />
+            <div className='absolute bg-gray-600 w-[17px] h-[1px] -rotate-45 top-[5px] -left-[14.5px]' />
           </div>
           {
             overflowStatuses.length != 0 && overflowStatuses.map((status) => {
