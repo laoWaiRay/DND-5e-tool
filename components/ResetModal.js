@@ -31,6 +31,7 @@ export default function ResetModal({ PC_NPC_list, monstersList }) {
   const [listenerActive, setListenerActive] = useState(false)
   const popupRef = useRef(null)
   const firstInputRef = useRef(null)
+  const formRef = useRef(null)
 
   useEffect(() => {
     console.log('mounted')
@@ -72,6 +73,18 @@ export default function ResetModal({ PC_NPC_list, monstersList }) {
       setListenerActive(false)
       document.removeEventListener('click', listenForClickOutside)
     }
+  }
+
+  {/* 
+    This is to detect if the user clicks outside the popover panel.
+    Since the panel is technically covering the width of the screen,
+    we need to check if the user clicks within the panel element but
+    outside of the UI visible portion of the panel, and then close
+    the popover.
+  */}
+  const handleClickClose = (e, close) => {
+    if (!formRef.current.contains(e.target))
+      close();
   }
 
   const handleFormChange = (index, event) => {
@@ -175,91 +188,94 @@ export default function ResetModal({ PC_NPC_list, monstersList }) {
           </div>
         </Popover.Button>
         
-        <Popover.Overlay className="fixed inset-0 bg-black opacity-90 z-50 cursor-auto" />
-
+        <Popover.Overlay className="fixed inset-0 bg-black z-10 opacity-90 cursor-auto" />
+        
         <Popover.Panel 
-          className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex justify-center items-center cursor-auto outline-none"
+          className="z-50 fixed inset-0 flex justify-center items-center cursor-auto outline-none"
+          ref={popupRef}
+          onClick={(e) => handleClickClose(e, close)}
         >
+          {/* This is a wrapper for the form to add space between it and the edges of the screen */}
           <div 
-            className='w-screen px-4 flex justify-center'
-            ref={popupRef}
+            className='w-full max-w-md mx-4 bg-gray-800 rounded-md border border-gray-500 text-gray-100'
           >
-            <div className='w-full max-w-md bg-gray-800 rounded-md border border-gray-500 text-gray-100'>
-              <form className='grid grid-cols-[1fr_100px_100px] text-gray-200 py-4 px-6'>
-                <div className='text-sm uppercase col-span-3 font-semibold grid grid-cols-[1fr_100px_100px] mb-2'>
-                    <div className='justify-self-start'>Player</div>
-                    <div>Initiative</div>
-                    <div>Dex Bonus</div>
-                </div>
-                {PC_NPC_inputFields.map((PC_NPC, index) => {
-                  return (
+            <form 
+              className='grid grid-cols-[1fr_100px_100px] text-gray-200 py-4 px-6'
+              ref={formRef}
+            >
+              <div className='text-sm uppercase col-span-3 font-semibold grid grid-cols-[1fr_100px_100px] mb-2'>
+                  <div className='justify-self-start'>Player</div>
+                  <div>Initiative</div>
+                  <div>Dex Bonus</div>
+              </div>
+              {PC_NPC_inputFields.map((PC_NPC, index) => {
+                return (
+                  <div 
+                    key={index}
+                    className='text-gray-600 grid grid-cols-[1fr_100px_100px] col-span-3 my-1'
+                  >
                     <div 
-                      key={index}
-                      className='text-gray-600 grid grid-cols-[1fr_100px_100px] col-span-3 my-1'
+                      className='text-lg font-light text-gray-100 flex justify-start self-center 
+                      overflow-hidden' 
                     >
-                      <div 
-                        className='text-lg font-light text-gray-100 flex justify-start self-center 
-                        overflow-hidden' 
-                      >
-                        <span className='overflow-hidden whitespace-nowrap overflow-ellipsis'>{PC_NPC.name}</span>
-                      </div>
-                      <input 
-                        ref={index == 0 ? firstInputRef : null}
-                        name='initiative'
-                        type='number'
-                        min={0}
-                        max={20}
-                        placeholder='0'
-                        value={PC_NPC.initiative}
-                        onFocus={e => handleInputFocus(index, e)}
-                        onChange={e => handleFormChange(index, e)}
-                        // Prevent certain inputs
-                        onKeyDown={(e) => handleKeyDown(e)}
-                        className='w-14 border-0 rounded-md p-1.5 focus:ring-0 shadow-md
-                        focus:shadow-lg transition-shadow duration-300 justify-self-center h-fit'
-                      />
-                      <input 
-                        name='dex_bonus'
-                        type='number'
-                        min={-99}
-                        max={99}
-                        placeholder='0'
-                        value={PC_NPC.dex_bonus}
-                        onChange={e => handleFormChange(index, e)}
-                        // Prevent certain inputs
-                        onKeyDown={(e) => handleKeyDown(e)}
-                        className='w-14 border-0 rounded-md p-1.5 focus:ring-0 shadow-md
-                        focus:shadow-lg transition-shadow duration-300 justify-self-center h-fit'
-                      />
+                      <span className='overflow-hidden whitespace-nowrap overflow-ellipsis'>{PC_NPC.name}</span>
                     </div>
-                  )
-                })}
-                <div className='flex w-full justify-end col-span-3 mt-3 space-x-2'>
-                  <button 
-                    className='p-2 rounded-md font-semibold col-start-2 
-                    col-end-3 bg-red-600 text-white'
-                    type='button'
-                    onClick={(e) => handleClickClearBtn(e)}
-                  >
-                    Clear
-                  </button>
-                  <Popover.Button
-                    className='p-2 rounded-md font-semibold col-start-2 
-                    col-end-3 bg-gray-500 text-white'
-                  >
-                      Cancel
-                  </Popover.Button>
-                  <button 
-                    className='p-2 rounded-md font-semibold col-start-2 
-                    col-end-3 bg-green-600 text-white'
-                    type='button'
-                    onClick={(e) => handleClickSaveBtn(e, close)}
-                  >
-                    Save Changes
-                  </button>
-                </div>
-              </form>
-            </div>
+                    <input 
+                      ref={index == 0 ? firstInputRef : null}
+                      name='initiative'
+                      type='number'
+                      min={0}
+                      max={20}
+                      placeholder='0'
+                      value={PC_NPC.initiative}
+                      onFocus={e => handleInputFocus(index, e)}
+                      onChange={e => handleFormChange(index, e)}
+                      // Prevent certain inputs
+                      onKeyDown={(e) => handleKeyDown(e)}
+                      className='w-14 border-0 rounded-md p-1.5 focus:ring-0 shadow-md
+                      focus:shadow-lg transition-shadow duration-300 justify-self-center h-fit'
+                    />
+                    <input 
+                      name='dex_bonus'
+                      type='number'
+                      min={-99}
+                      max={99}
+                      placeholder='0'
+                      value={PC_NPC.dex_bonus}
+                      onChange={e => handleFormChange(index, e)}
+                      // Prevent certain inputs
+                      onKeyDown={(e) => handleKeyDown(e)}
+                      className='w-14 border-0 rounded-md p-1.5 focus:ring-0 shadow-md
+                      focus:shadow-lg transition-shadow duration-300 justify-self-center h-fit'
+                    />
+                  </div>
+                )
+              })}
+              <div className='flex w-full justify-end col-span-3 mt-3 space-x-2'>
+                <button 
+                  className='p-2 rounded-md font-semibold col-start-2 
+                  col-end-3 bg-red-600 text-white'
+                  type='button'
+                  onClick={(e) => handleClickClearBtn(e)}
+                >
+                  Clear
+                </button>
+                <Popover.Button
+                  className='p-2 rounded-md font-semibold col-start-2 
+                  col-end-3 bg-gray-500 text-white'
+                >
+                    Cancel
+                </Popover.Button>
+                <button 
+                  className='p-2 rounded-md font-semibold col-start-2 
+                  col-end-3 bg-green-600 text-white'
+                  type='button'
+                  onClick={(e) => handleClickSaveBtn(e, close)}
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
           </div>
         </Popover.Panel>
         </>
