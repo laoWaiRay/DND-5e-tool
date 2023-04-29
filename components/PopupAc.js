@@ -159,7 +159,7 @@ export default function PopupAc({ creatureData, stateData, setStateData }) {
                         setBonusAcInput(parseInt(e.target.value))
                       }
                     }}
-                    min={0}
+                    min={-99}
                     max={99}
                   />
                 </div>

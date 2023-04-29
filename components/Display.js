@@ -1,11 +1,11 @@
 import { Transition } from '@headlessui/react'
 import { ChevronDoubleUpIcon } from '@heroicons/react/24/outline'
-import { ArrowPathIcon } from '@heroicons/react/24/solid'
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { useRecoilState } from 'recoil'
 import { activeCreaturesState } from '../atoms/activeCreaturesAtom'
 import { hiddenUserInputState } from '../atoms/hiddenUserInputAtom'
 import DisplayCardCreature from './DisplayCardCreature'
+import ResetModal from './ResetModal'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 export default function Display() {
@@ -13,6 +13,9 @@ export default function Display() {
   const [isHidden, setIsHidden] = useRecoilState(hiddenUserInputState);
   const [windowSize, setWindowSize] = useState([0, 0]);
   const [columns, setColumns] = useState([]);
+  const [resetModalShown, setResetModalShown] = useState(false);
+  const [PC_NPC_list, set_PC_NPC_list] = useState([]);
+  const [monstersList, setMonstersList] = useState([]);
   const isMounted = useRef(false)
   const allStorage = () => {
     const order = JSON.parse(localStorage.getItem('order'));
@@ -190,6 +193,20 @@ export default function Display() {
     return ret
   }
 
+  // Seperate all creatures into 2 lists: PCs/NPCs and monsters
+  useEffect(() => {
+    const new_PC_NPC_list = [];
+    const newMonstersList = [];
+    activeCreatures.forEach((creature) => {
+      if (creature.pc == true || creature.npc == true)
+        new_PC_NPC_list.push(creature);
+      else
+        newMonstersList.push(creature);
+    })
+    set_PC_NPC_list(new_PC_NPC_list);
+    setMonstersList(newMonstersList);
+  }, [activeCreatures])
+
   return (
     <DragDropContext
       onDragEnd={onDragEnd}
@@ -200,8 +217,11 @@ export default function Display() {
             id='topOfTheRound'
             className='text-gray-300 font-semibold text-center py-1.5 text-sm tracking-wide
             flex justify-center items-center'>
-            <span>TOP OF THE ROUND!</span>
-            <ArrowPathIcon className='w-6 h-6 text-gray-300 ml-3 hover:cursor-pointer'></ArrowPathIcon>
+            <span className='mr-3'>TOP OF THE ROUND!</span>
+            <ResetModal 
+              PC_NPC_list={PC_NPC_list}
+              monstersList={monstersList}
+            />
           </div>
         }
         {activeCreatures.length 

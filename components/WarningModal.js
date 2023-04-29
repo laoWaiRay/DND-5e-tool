@@ -18,7 +18,7 @@ export default function WarningModal({ handleDelete, elementRef }) {
         className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex justify-center items-center cursor-auto"
       >
         {({ close }) => (
-          <div className='p-8 bg-gray-800 rounded-md border border-gray-300 flex flex-col space-y-3 text-gray-200'>
+          <div className='p-8 bg-gray-800 rounded-md border border-gray-500 flex flex-col space-y-3 text-gray-200'>
             <p className='whitespace-nowrap'>Removing a player character. Are you sure?</p>
             <div className='flex space-x-4'>
               <button 

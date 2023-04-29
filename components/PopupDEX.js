@@ -7,11 +7,14 @@ import { activeCreaturesState } from '../atoms/activeCreaturesAtom'
 export default function PopupDEX({ creatureData, setStateData, stateData }) {
   const [activeCreatures, setActiveCreatures] = useRecoilState(activeCreaturesState);
   const [dexBonusOpen, setDexBonusOpen] = useState(false)
+  const [initiativeInput, setInitiativeInput] = useState(creatureData.initiative)
   const [dexBonusInput, setDexBonusInput] = useState(creatureData.dex_bonus)
   const [isOpen, setIsOpen] = useState(false)
   const [isOverflowed, setIsOverflowed] = useState(false)
   const closeRef = useRef(null)
   const popupRef = useRef(null);
+
+  console.log(stateData)
 
   useEffect(() => {
     if (!popupRef.current || isOverflowed == true)
@@ -21,9 +24,12 @@ export default function PopupDEX({ creatureData, setStateData, stateData }) {
     setIsOverflowed(isOverflowing)
   }, [isOpen, isOverflowed])
 
-  const updateDexData = (dexBonus) => {
+  const updateDexData = (initiative, dexBonus) => {
     const newStateData = { ...stateData };
     newStateData.dex_bonus = parseInt(dexBonus);
+    newStateData.initiative = parseInt(initiative);
+    console.log("NEW DATA")
+    console.log(newStateData)
     setStateData(newStateData)
   }
 
@@ -31,16 +37,20 @@ export default function PopupDEX({ creatureData, setStateData, stateData }) {
     if (creatureData.dex_bonus) {
       setDexBonusInput(parseInt(creatureData.dex_bonus))
     }
+    if(creatureData.initiative) {
+      setInitiativeInput(parseInt(creatureData.initiative))
+    }
   }, [creatureData])
 
   useEffect(() => {
-    updateDexData(dexBonusInput)
-  }, [dexBonusInput])
+    updateDexData(initiativeInput, dexBonusInput)
+  }, [dexBonusInput, initiativeInput])
 
   const handleSubmit = (e) => {
     e.preventDefault()
     const newCreatureData = { ...creatureData }
     newCreatureData.dex_bonus = parseInt(dexBonusInput)
+    newCreatureData.initiative = parseInt(initiativeInput)
     updateList(newCreatureData)
   }
 
@@ -67,7 +77,7 @@ export default function PopupDEX({ creatureData, setStateData, stateData }) {
           className='font-bold cursor-pointer px-1 aspect-square'
           onClick={() => setDexBonusOpen(!dexBonusOpen)}
         >
-          {creatureData.initiative}
+          {creatureData.initiative + creatureData.dex_bonus}
         </div>
       </Popover.Button>
 
@@ -94,11 +104,36 @@ export default function PopupDEX({ creatureData, setStateData, stateData }) {
             >
               <div className='flex space-x-4'>
                 <div>
-                  <h2 className='pb-1 text-sm whitespace-nowrap'>Bonus DEX</h2>
+                  <h2 className='pb-1 text-sm whitespace-nowrap'>Initiative</h2>
                   <input
                     className='rounded-md py-0.5 pr-1 text-stone-700 focus:border-gray-600 focus:ring-gray-600'
                     type='number'
                     autoFocus={true}
+                    value={initiativeInput}
+                    onChange= {(e) => {
+                      if (!e.target.value)
+                      {
+                        setInitiativeInput(0)
+                      }
+                      else if (e.target.value.length >= 3) {
+                        setInitiativeInput(Math.floor(parseInt(e.target.value) / 10))
+                      }
+                      else if (e.target.value[0] == '0') {
+                        setInitiativeInput(e.target.value.slice(-1))
+                      }
+                      else {
+                        setInitiativeInput(parseInt(e.target.value))
+                      }
+                    }}
+                    min={-20}
+                    max={20}
+                  />
+                </div>
+                <div>
+                  <h2 className='pb-1 text-sm whitespace-nowrap'>Bonus DEX</h2>
+                  <input
+                    className='rounded-md py-0.5 pr-1 text-stone-700 focus:border-gray-600 focus:ring-gray-600'
+                    type='number'
                     value={dexBonusInput}
                     onChange= {(e) => {
                       if (!e.target.value)
