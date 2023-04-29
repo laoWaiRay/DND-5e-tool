@@ -4,25 +4,58 @@ import { useRecoilState } from 'recoil';
 import { activeCreaturesState } from '../atoms/activeCreaturesAtom'
 import React, { useEffect, useRef, useState } from 'react'
 
+const deepCopyFunction = (inObject) => {
+  let outObject, value, key
+
+  if (typeof inObject !== "object" || inObject === null) {
+    return inObject // Return the value if inObject is not an object
+  }
+
+  // Create an array or object to hold the values
+  outObject = Array.isArray(inObject) ? [] : {}
+
+  for (key in inObject) {
+    value = inObject[key]
+
+    // Recursively (deep) copy for nested objects, including arrays
+    outObject[key] = deepCopyFunction(value)
+  }
+
+  return outObject
+}
+
 export default function ResetModal({ PC_NPC_list, monstersList }) {
   const [activeCreatures, setActiveCreatures] = useRecoilState(activeCreaturesState) 
   const [PC_NPC_inputFields, set_PC_NPC_inputfields] = useState([...PC_NPC_list])
   const [isOpen, setIsOpen] = useState(false)
   const [listenerActive, setListenerActive] = useState(false)
   const popupRef = useRef(null)
+  const firstInputRef = useRef(null)
 
   useEffect(() => {
     console.log('mounted')
+    console.log(activeCreatures)
 
     return () => console.log('unmounted')
   }, [])
 
   useEffect(() => {
-    console.log(isOpen)
-  }, [isOpen])
+    if (popupRef.current)
+      document.body.style.overflow = 'hidden'
+    else
+      document.body.style.overflow = ''
+  }, [popupRef.current])
 
   const resetInputs = () => {
     set_PC_NPC_inputfields([...PC_NPC_list])
+  }
+
+  const zeroInitiativeInputs = () => {
+    const updatedInputFields = deepCopyFunction(PC_NPC_inputFields)
+    updatedInputFields.forEach((player) => {
+      player.initiative = 0;
+    })
+    set_PC_NPC_inputfields(updatedInputFields)
   }
 
   const handleClickButton = (e) => {
@@ -46,11 +79,77 @@ export default function ResetModal({ PC_NPC_list, monstersList }) {
     const updatedElement = {
       ...data[index],
     };
-    updatedElement[event.target.name] = event.target.value;
+    
+    let inputMin;
+    let inputMax;
+
+    if (event.target.name == 'initiative') {
+      inputMin = 0;
+      inputMax = 20;
+    } else if (event.target.name == 'dex_bonus') {
+      inputMin = -99;
+      inputMax = 99;
+    }
+
+    let parsedInt;
+    if (event.target.value)
+      parsedInt = parseInt(event.target.value)
+    let value;
+
+    if (!parsedInt || parsedInt == 0)
+      value = '';
+    else if (parsedInt < inputMin)
+      value = inputMin;
+    else if (parsedInt > inputMax)
+      value = inputMax;
+    else
+      value = parsedInt;
+
+    updatedElement[event.target.name] = value;
     data[index] = updatedElement;
     set_PC_NPC_inputfields(data);
-    // console.log(activeCreatures)
-    console.log(popupRef.current)
+  }
+
+  const handleInputFocus = (index, event) => {
+    if (!parseInt(event.target.value) || parseInt(event.target.value) <= 0)
+      event.target.value = ''
+  }
+  
+  const handleClickClearBtn = (e) => {
+    zeroInitiativeInputs();
+    if (firstInputRef.current) {
+      firstInputRef.current.focus();
+      setTimeout(() => {
+        firstInputRef.current.value = '';
+      }, 0)
+    }
+  }
+
+  const handleClickSaveBtn = (e, close) => {
+    const updatedActiveCreatures = deepCopyFunction(activeCreatures);
+    const PC_NPC_inputFields_copy = deepCopyFunction(PC_NPC_inputFields);
+    PC_NPC_inputFields_copy.forEach((PC_NPC) => {
+      const index = updatedActiveCreatures.findIndex((el) => el.id === PC_NPC.id);
+      updatedActiveCreatures[index].initiative = PC_NPC.initiative;
+      updatedActiveCreatures[index].dex_bonus = PC_NPC.dex_bonus;
+    })
+    
+    updatedActiveCreatures.sort((a, b) => {
+      if (a.initiative != b.initiative) {
+        return parseInt(b.initiative) - parseInt(a.initiative)
+      }
+      else {
+        return parseInt(b.dex_bonus) - parseInt(a.dex_bonus)
+      }
+    })
+
+    setActiveCreatures(updatedActiveCreatures);
+
+    close();
+  }
+
+  const handleKeyDown = (e) => {
+    return (e.key === 'e' || e.key === '.') && e.preventDefault()
   }
 
   useEffect(() => {
@@ -66,86 +165,105 @@ export default function ResetModal({ PC_NPC_list, monstersList }) {
 
   return (
     <Popover className="flex">
-      <Popover.Button
-        onClick={handleClickButton}
-      >
-        <div className='cursor-pointer'>
-          <ArrowPathIcon className='h-6 w-6 text-gray-300'></ArrowPathIcon> 
-        </div>
-      </Popover.Button>
-
-      <Popover.Panel 
-        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex justify-center items-center cursor-auto outline-none"
-      >
-        <div 
-          className='w-screen px-3 flex justify-center'
-          ref={popupRef}
+      {({ close }) => 
+        <>
+        <Popover.Button
+          onClick={handleClickButton}
         >
-          <div className='w-full max-w-2xl bg-gray-800 rounded-md border border-gray-500 text-gray-100'>
-            <form className='grid grid-cols-[1fr_100px_100px] text-gray-200 py-3 px-6'>
-              <div className='text-sm uppercase col-span-3 font-semibold grid grid-cols-[1fr_100px_100px] mb-2'>
-                  <div className='justify-self-start'>Player</div>
-                  <div>Initiative</div>
-                  <div>Dex Bonus</div>
-              </div>
-              {PC_NPC_inputFields.map((PC_NPC, index) => {
-                return (
-                  <div 
-                    key={index}
-                    className='text-gray-600 grid grid-cols-[1fr_100px_100px] col-span-3 my-1'
-                  >
-                    <div className='text-lg font-light text-gray-100 flex justify-start self-center'>
-                      {PC_NPC.name}
-                    </div>
-                    <input 
-                      name='initiative'
-                      type='number'
-                      min={1}
-                      max={20}
-                      placeholder='0'
-                      value={PC_NPC.initiative}
-                      onChange={e => handleFormChange(index, e)}
-                      className='w-14 border-0 rounded-md p-1.5 focus:ring-0 shadow-md
-                      focus:shadow-lg transition-shadow duration-300 justify-self-center h-fit'
-                    />
-                    <input 
-                      name='dex_bonus'
-                      type='number'
-                      min={-99}
-                      max={99}
-                      placeholder='0'
-                      value={PC_NPC.dex_bonus}
-                      onChange={e => handleFormChange(index, e)}
-                      className='w-14 border-0 rounded-md p-1.5 focus:ring-0 shadow-md
-                      focus:shadow-lg transition-shadow duration-300 justify-self-center h-fit'
-                    />
-                  </div>
-                )
-              })}
-              <div className='flex w-full justify-end col-span-3 mt-3 space-x-2'>
-                <button 
-                  className='p-2 rounded-md font-semibold col-start-2 
-                  col-end-3 bg-red-600 text-white'
-                >
-                  Clear
-                </button>
-                <button 
-                  className='p-2 rounded-md font-semibold col-start-2 
-                  col-end-3 bg-gray-500 text-white'
-                >
-                  Cancel
-                </button>
-                <button 
-                  className='p-2 rounded-md font-semibold col-start-2 
-                  col-end-3 bg-green-600 text-white'
-                >
-                  Save Changes
-                </button>
-              </div>
-            </form>
+          <div className='cursor-pointer'>
+            <ArrowPathIcon className='h-6 w-6 text-gray-300'></ArrowPathIcon> 
           </div>
-        </div>
-      </Popover.Panel>
+        </Popover.Button>
+        
+        <Popover.Overlay className="fixed inset-0 bg-black opacity-90 z-50 cursor-auto" />
+
+        <Popover.Panel 
+          className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex justify-center items-center cursor-auto outline-none"
+        >
+          <div 
+            className='w-screen px-4 flex justify-center'
+            ref={popupRef}
+          >
+            <div className='w-full max-w-md bg-gray-800 rounded-md border border-gray-500 text-gray-100'>
+              <form className='grid grid-cols-[1fr_100px_100px] text-gray-200 py-4 px-6'>
+                <div className='text-sm uppercase col-span-3 font-semibold grid grid-cols-[1fr_100px_100px] mb-2'>
+                    <div className='justify-self-start'>Player</div>
+                    <div>Initiative</div>
+                    <div>Dex Bonus</div>
+                </div>
+                {PC_NPC_inputFields.map((PC_NPC, index) => {
+                  return (
+                    <div 
+                      key={index}
+                      className='text-gray-600 grid grid-cols-[1fr_100px_100px] col-span-3 my-1'
+                    >
+                      <div 
+                        className='text-lg font-light text-gray-100 flex justify-start self-center 
+                        overflow-hidden' 
+                      >
+                        <span className='overflow-hidden whitespace-nowrap overflow-ellipsis'>{PC_NPC.name}</span>
+                      </div>
+                      <input 
+                        ref={index == 0 ? firstInputRef : null}
+                        name='initiative'
+                        type='number'
+                        min={0}
+                        max={20}
+                        placeholder='0'
+                        value={PC_NPC.initiative}
+                        onFocus={e => handleInputFocus(index, e)}
+                        onChange={e => handleFormChange(index, e)}
+                        // Prevent certain inputs
+                        onKeyDown={(e) => handleKeyDown(e)}
+                        className='w-14 border-0 rounded-md p-1.5 focus:ring-0 shadow-md
+                        focus:shadow-lg transition-shadow duration-300 justify-self-center h-fit'
+                      />
+                      <input 
+                        name='dex_bonus'
+                        type='number'
+                        min={-99}
+                        max={99}
+                        placeholder='0'
+                        value={PC_NPC.dex_bonus}
+                        onChange={e => handleFormChange(index, e)}
+                        // Prevent certain inputs
+                        onKeyDown={(e) => handleKeyDown(e)}
+                        className='w-14 border-0 rounded-md p-1.5 focus:ring-0 shadow-md
+                        focus:shadow-lg transition-shadow duration-300 justify-self-center h-fit'
+                      />
+                    </div>
+                  )
+                })}
+                <div className='flex w-full justify-end col-span-3 mt-3 space-x-2'>
+                  <button 
+                    className='p-2 rounded-md font-semibold col-start-2 
+                    col-end-3 bg-red-600 text-white'
+                    type='button'
+                    onClick={(e) => handleClickClearBtn(e)}
+                  >
+                    Clear
+                  </button>
+                  <Popover.Button
+                    className='p-2 rounded-md font-semibold col-start-2 
+                    col-end-3 bg-gray-500 text-white'
+                  >
+                      Cancel
+                  </Popover.Button>
+                  <button 
+                    className='p-2 rounded-md font-semibold col-start-2 
+                    col-end-3 bg-green-600 text-white'
+                    type='button'
+                    onClick={(e) => handleClickSaveBtn(e, close)}
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </Popover.Panel>
+        </>
+      }
     </Popover>
   )
 }

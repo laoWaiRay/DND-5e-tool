@@ -196,11 +196,11 @@ export default function DisplayCardCreature({ creatureData, windowSize, ...rest 
         ${isSlid && '-translate-x-10'}`}
         ref={cardRef}
       >
-        <div className={`flex w-full space-x-2 top-0 left-0 ${isSlid && 'pointer-events-none'}`}>
+        <div className={`flex w-full overflow-hidden space-x-2 top-0 left-0 ${isSlid && 'pointer-events-none'}`}>
           {/* Name */}
-          <div className={`${ creatureData.pc == false && creatureData.npc == false && 'cursor-pointer' }`}>
+          <div className={`${ creatureData.pc == false && creatureData.npc == false && 'cursor-pointer'} overflow-hidden`}>
             <span 
-              className={`${creatureData.pc && 'text-amber-400'}`}
+              className={`${creatureData.pc && 'text-amber-400'} overflow-ellipsis overflow-hidden whitespace-nowrap`}
               ref={nameRef}
               onClick={(creatureData.pc == false && creatureData.npc == false) ? openMonsterManual : null}
             >
@@ -303,7 +303,6 @@ export default function DisplayCardCreature({ creatureData, windowSize, ...rest 
             />
           </div> 
         </div>
-
         {/* Expand Menu */}
         <div className='flex items-center border-l border-l-gray-600 pl-1'>
           <ChevronLeftIcon 

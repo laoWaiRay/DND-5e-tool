@@ -25,6 +25,7 @@ export default function PopupHp({ creatureData, setStateData, stateData }) {
     newStateData.hp = parseInt(hp);
     newStateData.tmpHp = parseInt(tmpHp);
     setStateData(newStateData)
+    console.log(stateData)
   }
 
   useEffect(() => {

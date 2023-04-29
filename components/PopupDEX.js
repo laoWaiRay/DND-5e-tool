@@ -14,12 +14,10 @@ export default function PopupDEX({ creatureData, setStateData, stateData }) {
   const closeRef = useRef(null)
   const popupRef = useRef(null);
 
-  console.log(stateData)
-
   useEffect(() => {
     if (!popupRef.current || isOverflowed == true)
       return
-    console.log(popupRef.current.getBoundingClientRect().bottom)
+    // console.log(popupRef.current.getBoundingClientRect().bottom)
     const isOverflowing = popupRef.current.getBoundingClientRect().bottom > window.innerHeight;
     setIsOverflowed(isOverflowing)
   }, [isOpen, isOverflowed])
@@ -28,8 +26,8 @@ export default function PopupDEX({ creatureData, setStateData, stateData }) {
     const newStateData = { ...stateData };
     newStateData.dex_bonus = parseInt(dexBonus);
     newStateData.initiative = parseInt(initiative);
-    console.log("NEW DATA")
-    console.log(newStateData)
+    // console.log("NEW DATA")
+    // console.log(newStateData)
     setStateData(newStateData)
   }
 

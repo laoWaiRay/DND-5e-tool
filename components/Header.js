@@ -66,7 +66,7 @@ export default function Header() {
               && !conditionsOpen && !aboutOpen && 'text-gray-100'} py-4 hidden xs:block`}
               onClick={() => { closeAllPages() }}
             >
-              Battle
+              Combat
             </div>
             <div 
               className={`whitespace-nowrap cursor-pointer ${monsterManualOpen && 'text-gray-100'} py-4
