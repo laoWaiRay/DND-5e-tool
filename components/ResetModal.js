@@ -98,7 +98,7 @@ export default function ResetModal({ PC_NPC_list, monstersList }) {
 
     if (event.target.name == 'initiative') {
       inputMin = 0;
-      inputMax = 20;
+      inputMax = 99;
     } else if (event.target.name == 'dex_bonus') {
       inputMin = -99;
       inputMax = 99;
@@ -203,10 +203,10 @@ export default function ResetModal({ PC_NPC_list, monstersList }) {
               className='grid grid-cols-[1fr_100px_100px] text-gray-200 py-4 px-6'
               ref={formRef}
             >
-              <div className='text-sm uppercase col-span-3 font-semibold grid grid-cols-[1fr_100px_100px] mb-2'>
-                  <div className='justify-self-start'>Player</div>
-                  <div>Initiative</div>
-                  <div>Dex Bonus</div>
+              <div className='text-sm uppercase col-span-3 font-semibold grid grid-cols-[1fr_100px_100px] mb-2 border-b-gray-400 border-b pb-2'>
+                  <div className='justify-self-start flex items-center'>Player</div>
+                  <div>Initiative (total)</div>
+                  <div>Dex Bonus (optional)</div>
               </div>
               {PC_NPC_inputFields.map((PC_NPC, index) => {
                 return (
@@ -225,7 +225,7 @@ export default function ResetModal({ PC_NPC_list, monstersList }) {
                       name='initiative'
                       type='number'
                       min={0}
-                      max={20}
+                      max={99}
                       placeholder='0'
                       value={PC_NPC.initiative}
                       onFocus={e => handleInputFocus(index, e)}
@@ -251,7 +251,7 @@ export default function ResetModal({ PC_NPC_list, monstersList }) {
                   </div>
                 )
               })}
-              <div className='flex w-full justify-end col-span-3 mt-3 space-x-2'>
+              <div className='flex w-full justify-end col-span-3 mt-4 space-x-2'>
                 <button 
                   className='p-2 rounded-md font-semibold col-start-2 
                   col-end-3 bg-red-600 text-white'
@@ -262,7 +262,7 @@ export default function ResetModal({ PC_NPC_list, monstersList }) {
                 </button>
                 <Popover.Button
                   className='p-2 rounded-md font-semibold col-start-2 
-                  col-end-3 bg-gray-500 text-white'
+                  col-end-3 bg-gray-600 text-white'
                 >
                     Cancel
                 </Popover.Button>

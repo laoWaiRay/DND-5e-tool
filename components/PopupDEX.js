@@ -75,7 +75,7 @@ export default function PopupDEX({ creatureData, setStateData, stateData }) {
           className='font-bold cursor-pointer px-1 aspect-square'
           onClick={() => setDexBonusOpen(!dexBonusOpen)}
         >
-          {creatureData.initiative + creatureData.dex_bonus}
+          {creatureData.initiative}
         </div>
       </Popover.Button>
 
@@ -101,8 +101,8 @@ export default function PopupDEX({ creatureData, setStateData, stateData }) {
               onSubmit={(e) => {handleSubmit(e); close(closeRef);}}
             >
               <div className='flex space-x-4'>
-                <div>
-                  <h2 className='pb-1 text-sm whitespace-nowrap'>Initiative</h2>
+                <div className='flex flex-col items-start'>
+                  <h2 className='pb-1 text-xs whitespace-nowrap'>Initiative (total)</h2>
                   <input
                     className='rounded-md py-0.5 pr-1 text-stone-700 focus:border-gray-600 focus:ring-gray-600'
                     type='number'
@@ -123,12 +123,12 @@ export default function PopupDEX({ creatureData, setStateData, stateData }) {
                         setInitiativeInput(parseInt(e.target.value))
                       }
                     }}
-                    min={-20}
-                    max={20}
+                    min={-99}
+                    max={99}
                   />
                 </div>
                 <div>
-                  <h2 className='pb-1 text-sm whitespace-nowrap'>Bonus DEX</h2>
+                  <h2 className='pb-1 text-xs whitespace-nowrap'>Bonus DEX</h2>
                   <input
                     className='rounded-md py-0.5 pr-1 text-stone-700 focus:border-gray-600 focus:ring-gray-600'
                     type='number'
@@ -148,8 +148,8 @@ export default function PopupDEX({ creatureData, setStateData, stateData }) {
                         setDexBonusInput(parseInt(e.target.value))
                       }
                     }}
-                    min={-20}
-                    max={20}
+                    min={-99}
+                    max={99}
                   />
                 </div>
 
