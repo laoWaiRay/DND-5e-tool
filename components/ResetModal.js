@@ -183,7 +183,10 @@ export default function ResetModal({ PC_NPC_list, monstersList }) {
         <Popover.Button
           onClick={handleClickButton}
         >
-          <div className='cursor-pointer'>
+          <div 
+            className='cursor-pointer'
+            title='Reset player initiatives'
+          >
             <ArrowPathIcon className='h-6 w-6 text-gray-300'></ArrowPathIcon> 
           </div>
         </Popover.Button>

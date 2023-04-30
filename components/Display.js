@@ -1,5 +1,6 @@
 import { Transition } from '@headlessui/react'
 import { ChevronDoubleUpIcon } from '@heroicons/react/24/outline'
+import Image from 'next/image'
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { useRecoilState } from 'recoil'
 import { activeCreaturesState } from '../atoms/activeCreaturesAtom'
@@ -207,6 +208,18 @@ export default function Display() {
     setMonstersList(newMonstersList);
   }, [activeCreatures])
 
+  const handleClickClearMonstersBtn = () => {
+    const updatedActiveCreatures = [];
+
+    // Find all non-monsters and add them to the updated list of creatures 
+    activeCreatures.forEach((creature) => {
+      if (creature.pc || creature.npc)
+        updatedActiveCreatures.push(creature) 
+    })
+
+    setActiveCreatures(updatedActiveCreatures);
+  }
+
   return (
     <DragDropContext
       onDragEnd={onDragEnd}
@@ -217,6 +230,17 @@ export default function Display() {
             id='topOfTheRound'
             className='text-gray-300 font-semibold text-center py-1.5 text-sm tracking-wide
             flex justify-center items-center'>
+            <span className='mr-3'>
+            <Image
+              className='hover:cursor-pointer'
+              title='Clear all creatures'
+              alt='skull'
+              src='/skull.svg'
+              width={24}
+              height={24}
+              onClick={handleClickClearMonstersBtn}
+            /> 
+            </span>
             <span className='mr-3'>TOP OF THE ROUND!</span>
             <ResetModal 
               PC_NPC_list={PC_NPC_list}

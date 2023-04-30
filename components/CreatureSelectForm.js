@@ -19,6 +19,7 @@ export default function CreatureSelectForm({ creatures, tab }) {
   const [isLoading, setIsLoading] = useRecoilState(loadingState)
   const [activeCreatures, setActiveCreatures] = useRecoilState(activeCreaturesState);
   const [colors, setColors] = useState([])
+  const [customTypeIsNPC, setCustomTypeIsNPC] = useState(false) 
   const d20Ref = useRef(null);
 
   useEffect(() => {
@@ -174,7 +175,7 @@ export default function CreatureSelectForm({ creatures, tab }) {
       dex_bonus: parseInt(bonus),
       ac: parseInt(ac),
       pc: false,  // Player Character
-      npc: true,
+      npc: customTypeIsNPC ? true : false,
       color: null,
       tmpHp: 0,
       hp: parseInt(hp),
@@ -203,6 +204,13 @@ export default function CreatureSelectForm({ creatures, tab }) {
   const clearZero = (e, input, setInput) => {
     if (input == '0')
       setInput('')
+  }
+
+  const handleCustomTypeChange = (e) => {
+    if (e.target.value == 'creature')
+      setCustomTypeIsNPC(false)
+    else
+      setCustomTypeIsNPC(true)
   }
 
   useEffect(() => {
@@ -254,7 +262,6 @@ export default function CreatureSelectForm({ creatures, tab }) {
             (
               <div>
                 <input
-                  // autoFocus={true}
                   type='text'
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -263,6 +270,51 @@ export default function CreatureSelectForm({ creatures, tab }) {
                   shadow-md focus:ring-0 focus:shadow-lg bg-gray-100
                   duration-300 transition-shadow'
                 />
+
+                {/* Creature / NPC type picker for custom tab only */}
+                {
+                  tab == 'custom' && 
+                  <div className='flex flex-col mx-2 mt-2 space-y-2'>
+                    <input 
+                      type='radio' 
+                      name='customType'
+                      id='customTypeCreatureRadioBtn'
+                      value='creature'
+                      checked={!customTypeIsNPC}
+                      onChange={(e) => handleCustomTypeChange(e)}
+                      className='hidden'
+                    />
+                    <label
+                      for='customTypeCreatureRadioBtn'
+                      className={'flex text-gray-200 items-center cursor-pointer text-md'}
+                    >
+                      <span 
+                        className={`w-6 h-6 inline-block rounded-full border border-black-200 mr-2 
+                        ${!customTypeIsNPC && 'bg-red-800'}`}
+                      />
+                      Creature
+                    </label>
+                    <input 
+                      type='radio' 
+                      name='customType'
+                      id='customTypeNPCRadioBtn'
+                      value='npc'
+                      checked={customTypeIsNPC}
+                      onChange={(e) => handleCustomTypeChange(e)}
+                      className='hidden'
+                    />
+                    <label
+                      for='customTypeNPCRadioBtn'
+                      className='flex text-gray-200 items-center cursor-pointer text-md'
+                    >
+                      <span 
+                        className={`w-6 h-6 inline-block rounded-full border border-gray-200 mr-2 
+                        ${customTypeIsNPC && 'bg-red-800'}`}
+                      />
+                      NPC
+                    </label>
+                  </div>
+                }
               </div>
             )
           : tab === 'creatures' ?
